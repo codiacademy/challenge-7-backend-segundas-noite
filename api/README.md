@@ -30,3 +30,5 @@ zod
 
 Hash senhas:
 bcryptjs
+
+Iniciando as rotas de usuários
