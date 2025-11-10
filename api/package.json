@@ -2,15 +2,16 @@
   "name": "api",
   "version": "1.0.0",
   "description": "1- autenticação- admin e master\r 2 crud vendas\r 3 graficos\r 4 crud despesas\r 5 crud membros\r 6 config -perfil-=segurança\r 7 refatoração",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch apps/src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "prisma": "^6.18.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
