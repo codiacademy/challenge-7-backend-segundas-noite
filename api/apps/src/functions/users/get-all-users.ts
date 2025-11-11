@@ -4,7 +4,7 @@ import { prisma } from '../../lib/prisma.js'
 
 router.get('/users', async (req, res) => {
   try {
-    const users = await prisma.user.findMany({
+    const users = await prisma.collaborator.findMany({
       orderBy: {
         createdAt: 'desc',
       },
@@ -16,3 +16,4 @@ router.get('/users', async (req, res) => {
     }
   }
 })
+export default router

@@ -3,8 +3,9 @@ export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
 router.post('/users', async (req, res) => {
   try {
-    const { name, phoneNumber, email, wage, sector, status } = req.body
-    await prisma.user.create({
+    const { name, phoneNumber, email, wage, sector, status, createdAt } =
+      req.body
+    await prisma.collaborator.create({
       data: {
         name,
         phoneNumber,
@@ -12,6 +13,7 @@ router.post('/users', async (req, res) => {
         wage,
         sector,
         status,
+        createdAt,
       },
     })
     return res.status(201).json({ message: 'User created successfully' })
