@@ -1,11 +1,13 @@
+//HTTP COLLABORATOR
+
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
- "name": "Vanessa Samuel",
+ "name": "Max",
  "phoneNumber": "329434343",
- "email": "vanessamuel@gmail.com",
- "wage": 5500, 
+ "email": "max@gmail.com",
+ "wage": 5000, 
  "sector": "Tecnologia" ,
  "status": "ATIVO"
  
@@ -13,3 +15,78 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/users
+
+//
+
+//HTTP EXPENSES
+
+###
+POST http://localhost:3000/expenses
+Content-Type: application/json 
+
+{
+    "name": "Telefone",
+    "description": "Telefone São Mateus",
+    "value": 150,
+    "type": "Fixa",
+    "date": "2025-10-10"
+
+}
+
+###
+GET http://localhost:3000/expenses
+
+//Courses 
+
+###
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+    "image": "fdgdfgdd",
+    "status": "ATIVO",
+    "name": "Javascript",
+    "description": "Curso para quem quer aprender a progrmar com JavaScript e SpringBoot",
+    "value": 1500
+}
+
+###
+GET http://localhost:3000/courses
+
+###
+GET http://localhost:3000/sales
+
+####
+POST http://localhost:3000/sales
+Content-Type: application/json
+
+{
+    "modalidade": "ONLINE",
+    "coursedId": "978b5109-092f-4fe7-947b-06e7fb87710c",
+    "nomeAluno": "Sandro",
+    "email": "teste@teste.com",
+    "telefone": "32554gfgff",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}
+
+
+//Franchises
+###
+POST http://localhost:3000/franchises
+Content-Type: application/json
+
+{
+    "name": "Unidade Moinho",
+    "city": "Juiz de Fora",
+    "state": "Minas Gerais",
+    "responsible":"Yuri",
+    "phoneNumber": "31154545,",
+    "email": "codimoinho@gmail.com",
+    "status": "ATIVO"
+
+}
+
+###
+GET http://localhost:3000/franchises
