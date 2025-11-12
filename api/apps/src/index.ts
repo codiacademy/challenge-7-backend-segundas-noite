@@ -1,22 +1,14 @@
 import express from 'express'
-import router from './functions/users/delete-users'
+// import router from './functions/users/delete-users'
+import { router as createUser } from './functions/users/create-users'
+import { router as getAll } from './functions/users/get-all-users'
 
 const app = express()
 
 app.use(express.json())
-app.use(router)
-
-//Simulando o Banco de Dados
-export let users = [
-  { id: 1, name: 'João' },
-  { id: 2, name: 'Maria' },
-  { id: 3, name: 'Pedro' },
-]
-
-// Buscando usuários
-app.get('/users', (req, res) => {
-  res.json(users)
-})
+// app.use(router)
+app.use(createUser)
+app.use(getAll)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
