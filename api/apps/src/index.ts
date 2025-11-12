@@ -5,7 +5,7 @@ import { router as createUser } from './functions/users/create-users'
 import { router as getAll } from './functions/users/get-all-users'
 
 import { router as createExpenses } from './functions/expenses/create-expenses'
-
+import { router as getAllExpenses } from './functions/expenses/get-all-expenses'
 const app = express()
 
 app.use(express.json())
@@ -16,6 +16,7 @@ app.use(getAll)
 
 //Router Expenses
 app.use(createExpenses)
+app.use(getAllExpenses)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
