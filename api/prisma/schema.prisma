@@ -28,6 +28,7 @@ model Courses {
   name String
   description String
   value Float
+  createdAt DateTime @default(now())
 
   sale Sale[]
 } 

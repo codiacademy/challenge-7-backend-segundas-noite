@@ -49,3 +49,6 @@ Content-Type: application/json
     "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
     "value": 1500
 }
+
+###
+GET http://localhost:3000/courses
