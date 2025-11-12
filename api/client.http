@@ -70,3 +70,20 @@ Content-Type: application/json
     "valorLiquido":1356
 
 }
+
+
+//Franchises
+###
+POST http://localhost:3000/franchises
+Content-Type: application/json
+
+{
+    "name": "Unidade São Mateus",
+    "city": "Juiz de Fora",
+    "state": "Minas Gerais",
+    "responsible":"Yuri",
+    "phoneNumber": "311545454",
+    "email": "codisaomateus@gmail.com",
+    "status": "ATIVO"
+
+}
