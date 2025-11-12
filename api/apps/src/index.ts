@@ -4,7 +4,9 @@ import express from 'express'
 import { router as createUser } from './functions/users/create-users'
 import { router as getAll } from './functions/users/get-all-users'
 
-import { router as createSale } from './functions/sales/create-sales'
+import { router as createSales } from './functions/sales/create-sales'
+import { router as getAllSales } from './functions/sales/get-all-sales'
+
 import { router as createExpenses } from './functions/expenses/create-expenses'
 import { router as getAllExpenses } from './functions/expenses/get-all-expenses'
 
@@ -18,7 +20,10 @@ app.use(express.json())
 app.use(createUser)
 app.use(getAll)
 
-app.use(createSale)
+//Router Sales
+app.use(createSales)
+app.use(getAllSales)
+
 //Router Expenses
 app.use(createExpenses)
 app.use(getAllExpenses)

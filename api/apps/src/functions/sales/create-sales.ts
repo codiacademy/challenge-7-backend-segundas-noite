@@ -23,9 +23,14 @@ router.post('/sales', async (req, res) => {
         telefone,
         valorBruto,
         valorLiquido,
+        course: {
+          connect: { id: '27f2a25e-0972-4d4a-a3ab-775449989351' }, // id de um curso existente
+        },
       },
     })
 
     return res.status(201).json({ message: 'Sale created successfully' })
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 })

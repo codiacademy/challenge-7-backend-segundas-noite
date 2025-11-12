@@ -52,3 +52,21 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/courses
+
+###
+GET http://localhost:3000/sales
+
+####
+POST http://localhost:3000/sales
+Content-Type: application/json
+
+{
+    "modalidade": "ONLINE",
+    "coursedId": "27f2a25e-0972-4d4a-a3ab-775449989351",
+    "nomeAluno": "Lucio",
+    "email": "teste@teste.com",
+    "telefone": "32554gfgff",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}
