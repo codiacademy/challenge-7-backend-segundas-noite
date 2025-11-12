@@ -2,14 +2,28 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
- "name": "Vanessa Samuel",
- "phoneNumber": "329434343",
- "email": "vanessamuel@gmail.com",
- "wage": 5500, 
- "sector": "Tecnologia" ,
+ "name": "dkajdlkad",
+ "phoneNumber": "625391736",
+ "email": "dhasdhalsdjal@gmail.com",
+ "wage": 2121212, 
+ "sector": "fsfsdfsf" ,
  "status": "ATIVO"
  
 }
 
 ###
 GET http://localhost:3000/users
+
+###
+PUT http://localhost:3000/users/82e1bdc4-9c2c-4e73-9de1-cc466f1411e3
+Content-Type: application/json
+
+{
+ "name": "Gabriel",
+ "phoneNumber": "991382140",
+ "email": "gabrielsresende18@gmail.com",
+ "wage": 5000, 
+ "sector": "Tecnologia" ,
+ "status": "ATIVO"
+ 
+}
