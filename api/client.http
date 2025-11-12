@@ -36,3 +36,16 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/expenses
 
+//Courses 
+
+###
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+    "image": "fdgdfgdd",
+    "status": "ATIVO",
+    "name": "Java",
+    "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
+    "value": 1500
+}
