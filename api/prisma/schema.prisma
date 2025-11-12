@@ -18,6 +18,7 @@ model Expenses {
   value Float
   type String
   date DateTime 
+  createdAt DateTime @default(now())
 }
 //tabela de Cursos
 model Courses {
