@@ -78,12 +78,12 @@ POST http://localhost:3000/franchises
 Content-Type: application/json
 
 {
-    "name": "Unidade São Mateus",
+    "name": "Unidade Moinho",
     "city": "Juiz de Fora",
     "state": "Minas Gerais",
     "responsible":"Yuri",
-    "phoneNumber": "311545454",
-    "email": "codisaomateus@gmail.com",
+    "phoneNumber": "31154545,",
+    "email": "codimoinho@gmail.com",
     "status": "ATIVO"
 
 }
