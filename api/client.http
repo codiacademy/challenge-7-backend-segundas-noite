@@ -87,3 +87,6 @@ Content-Type: application/json
     "status": "ATIVO"
 
 }
+
+###
+GET http://localhost:3000/franchises
