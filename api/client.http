@@ -74,3 +74,23 @@ Content-Type: application/json
     "valorLiquido":1356
 
 }
+
+
+//Franchises
+###
+POST http://localhost:3000/franchises
+Content-Type: application/json
+
+{
+    "name": "Unidade Moinho",
+    "city": "Juiz de Fora",
+    "state": "Minas Gerais",
+    "responsible":"Yuri",
+    "phoneNumber": "31154545,",
+    "email": "codimoinho@gmail.com",
+    "status": "ATIVO"
+
+}
+
+###
+GET http://localhost:3000/franchises

@@ -40,6 +40,10 @@ app.use(createCourses)
 app.use(getAllCourses)
 app.use(deleteCourses)
 
+//Router Franchise
+//app.use(createFranchise)
+//app.use(getAllFranchise)
+
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000')
