@@ -4,9 +4,9 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
- "name": "Gabriel",
+ "name": "Max",
  "phoneNumber": "329434343",
- "email": "gabriel@gmail.com",
+ "email": "max@gmail.com",
  "wage": 5000, 
  "sector": "Tecnologia" ,
  "status": "ATIVO"
@@ -16,7 +16,11 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/users
 
-//
+###
+
+DELETE http://localhost:3000/users/b16ce1c6-7569-46c8-b1ad-2da7a01fa909
+
+
 
 //HTTP EXPENSES
 
@@ -25,10 +29,10 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Luz",
-    "description": "Luz São Mateus",
-    "value": 126.5,
-    "type": "Variavel",
+    "name": "Telefone",
+    "description": "Telefone São Mateus",
+    "value": 150,
+    "type": "Fixa",
     "date": "2025-10-10"
 
 }
@@ -36,7 +40,11 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/expenses
 
-//Courses 
+###
+
+DELETE http://localhost:3000/expenses/617373f4-ae08-4584-b439-a2eff8ddbd8c
+
+//HTTP COURSES
 
 ###
 POST http://localhost:3000/courses
@@ -45,14 +53,15 @@ Content-Type: application/json
 {
     "image": "fdgdfgdd",
     "status": "ATIVO",
-    "name": "Java",
-    "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
+    "name": "Javascript",
+    "description": "Curso para quem quer aprender a progrmar com JavaScript e SpringBoot",
     "value": 1500
 }
 
 ###
 GET http://localhost:3000/courses
 
+// HTTP SALES
 ###
 GET http://localhost:3000/sales
 
@@ -62,11 +71,34 @@ Content-Type: application/json
 
 {
     "modalidade": "ONLINE",
-    "coursedId": "27f2a25e-0972-4d4a-a3ab-775449989351",
-    "nomeAluno": "Lucio",
+    "coursedId": "978b5109-092f-4fe7-947b-06e7fb87710c",
+    "nomeAluno": "Sandro",
     "email": "teste@teste.com",
     "telefone": "32554gfgff",
     "valorBruto": 1500,
     "valorLiquido":1356
 
 }
+
+###
+ DELETE http://localhost:3000/sales/3ca8df8c-aa87-46a1-8117-28f66d69d440
+
+
+// HTTP FRANCHISES
+###
+POST http://localhost:3000/franchises
+Content-Type: application/json
+
+{
+    "name": "Unidade Moinho",
+    "city": "Juiz de Fora",
+    "state": "Minas Gerais",
+    "responsible":"Yuri",
+    "phoneNumber": "31154545,",
+    "email": "codimoinho@gmail.com",
+    "status": "ATIVO"
+
+}
+
+###
+GET http://localhost:3000/franchises
