@@ -52,3 +52,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/courses
+
+###
+
+DELETE http://localhost:3000/courses/27f2a25e-0972-4d4a-a3ab-775449989351
