@@ -7,13 +7,13 @@ router.delete('/sales/:id', async (req, res) => {
   try {
     const { id } = req.params
 
-    const user = await prisma.sale.delete({
+    const sale = await prisma.sale.delete({
       where: { id },
     })
 
     return res.status(200).json({
       message: 'Venda deletada com sucesso',
-      user,
+      sale,
     })
   } catch (error: any) {
     if (error.code === 'P2025') {

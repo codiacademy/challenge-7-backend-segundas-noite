@@ -20,7 +20,7 @@ GET http://localhost:3000/users
 
 DELETE http://localhost:3000/users/b16ce1c6-7569-46c8-b1ad-2da7a01fa909
 
-//
+
 
 //HTTP EXPENSES
 
@@ -40,7 +40,11 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/expenses
 
-//Courses 
+###
+
+DELETE http://localhost:3000/expenses/617373f4-ae08-4584-b439-a2eff8ddbd8c
+
+//HTTP COURSES
 
 ###
 POST http://localhost:3000/courses
@@ -57,6 +61,7 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/courses
 
+// HTTP SALES
 ###
 GET http://localhost:3000/sales
 
@@ -75,8 +80,11 @@ Content-Type: application/json
 
 }
 
+###
+ DELETE http://localhost:3000/sales/3ca8df8c-aa87-46a1-8117-28f66d69d440
 
-//Franchises
+
+// HTTP FRANCHISES
 ###
 POST http://localhost:3000/franchises
 Content-Type: application/json
