@@ -25,11 +25,11 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Cabelerip",
+    "name": "Agua",
     "description": "Limpeza São Mateus",
     "value": 154,
     "type": "Varialvel",
-    "date": "2025-12-10"
+    "date": "2026-09-10"
 
 }
 
@@ -94,3 +94,6 @@ GET http://localhost:3000/franchises
 
 ###
 GET http://localhost:3000/expenses/2025-12-10
+
+###
+GET http://localhost:3000/expenses-year/2025
