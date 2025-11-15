@@ -16,6 +16,8 @@ import { router as getAllCourses } from './functions/Courses/get-all-courses'
 import { router as createFranchise } from './functions/franchises/create-franchise'
 import { router as getAllFranchise } from './functions/franchises/get-all-franchises'
 
+import { router as metricsExpenses } from './functions/metrics/metrics-expenses/filter-expenses-day'
+
 const app = express()
 
 app.use(express.json())
@@ -39,6 +41,9 @@ app.use(getAllCourses)
 //Router Franchise
 app.use(createFranchise)
 app.use(getAllFranchise)
+
+//Router Metrics Expenses
+app.use(metricsExpenses)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {

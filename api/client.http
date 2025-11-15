@@ -25,11 +25,11 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Telefone",
-    "description": "Telefone São Mateus",
-    "value": 150,
-    "type": "Fixa",
-    "date": "2025-10-10"
+    "name": "Cabelerip",
+    "description": "Limpeza São Mateus",
+    "value": 154,
+    "type": "Varialvel",
+    "date": "2025-12-10"
 
 }
 
@@ -90,3 +90,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/franchises
+
+
+###
+GET http://localhost:3000/expenses/2025-12-10
