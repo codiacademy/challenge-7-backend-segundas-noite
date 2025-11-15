@@ -91,9 +91,12 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/franchises
 
-
+//Metrics-Expenses
 ###
 GET http://localhost:3000/expenses/2025-12-10
 
 ###
 GET http://localhost:3000/expenses-year/2025
+
+### 
+GET http://localhost:3000/expenses-day/2026-09-11
