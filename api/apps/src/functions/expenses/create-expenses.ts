@@ -7,7 +7,7 @@ router.post('/expenses', async (req, res) => {
   try {
     const { name, description, value, type, date } = req.body
     console.log(date)
-    const parseDate = new Date(date)
+    const parseDate = new Date(String(date))
     console.log(parseDate)
     await prisma.expenses.create({
       data: {
