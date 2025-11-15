@@ -17,7 +17,7 @@ router.get('/expenses-year/:year', async (req, res) => {
         },
       },
     })
-
+    console.log(expenses)
     return res.status(200).json(expenses)
   } catch (error) {
     if (error) {
