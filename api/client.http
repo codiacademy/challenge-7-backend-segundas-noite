@@ -70,3 +70,18 @@ Content-Type: application/json
     "valorLiquido":1356
 
 }
+
+####
+PUT http://localhost:3000/sales/d5da99d4-d2c3-4f15-b771-82f13d738f12
+Content-Type: application/json
+
+{
+    "modalidade": "PRESENCIAL",
+    "courseId": "27f2a25e-0972-4d4a-a3ab-775449989351",
+    "nomeAluno": "Lucas",
+    "email": "lucas@teste.com",
+    "telefone": "324548754",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}

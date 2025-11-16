@@ -1,38 +1,46 @@
-import express from 'express'
-export const router = express.Router()
-import { prisma } from '../../lib/prisma.js'
+import express from "express";
+export const router = express.Router();
+import { prisma } from "../../lib/prisma.js";
 
-router.put('/users/:id', async (req, res) => {
+router.put("/sales/:id", async (req, res) => {
   try {
-    const { id } = req.params
-    const { modalidade, nomeAluno, email, telefone, valorBruto, valorLiquido } =
-      req.body
+    const { id } = req.params;
+    const {
+      modalidade,
+      courseId,
+      nomeAluno,
+      email,
+      telefone,
+      valorBruto,
+      valorLiquido,
+    } = req.body;
 
     const updateSale = await prisma.sale.update({
       where: { id },
       data: {
         modalidade,
+        courseId,
         nomeAluno,
         email,
         telefone,
         valorBruto,
         valorLiquido,
       },
-    })
+    });
 
     return res.status(200).json({
-      message: 'Venda atualizada com sucesso',
+      message: "Venda atualizada com sucesso",
       user: updateSale,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
 
     if (error instanceof Error) {
-      return res.status(404).json({ message: 'Venda não encontrada' })
+      return res.status(404).json({ message: "Venda não encontrada" });
     }
 
-    return res.status(500).json({ message: 'Erro interno' })
+    return res.status(500).json({ message: "Erro interno" });
   }
-})
+});
 
-export default router
+export default router;
