@@ -15,6 +15,7 @@ import { router as getAllCourses } from './functions/Courses/get-all-courses'
 
 import { router as createFranchise } from './functions/franchises/create-franchise'
 import { router as getAllFranchise } from './functions/franchises/get-all-franchises'
+import { router as updateFranchises } from './functions/franchises/update-franchises'
 
 const app = express()
 
@@ -39,6 +40,7 @@ app.use(getAllCourses)
 //Router Franchise
 app.use(createFranchise)
 app.use(getAllFranchise)
+app.use(updateFranchises)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
