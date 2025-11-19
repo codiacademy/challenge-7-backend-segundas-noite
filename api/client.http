@@ -43,12 +43,24 @@ POST http://localhost:3000/courses
 Content-Type: application/json
 
 {
-    "image": "fdgdfgdd",
+    "image": "fdsfsdff",
     "status": "ATIVO",
-    "name": "Java",
-    "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
+    "name": "Prsma",
+    "description": "Curso de prisma para bsckend",
     "value": 1500
 }
 
 ###
 GET http://localhost:3000/courses
+
+###
+PUT http://localhost:3000/courses/b3b6d530-879c-4a43-a415-3214f4d689ff
+Content-Type: application/json
+
+{
+    "image": "jlsjdfisj",
+    "status": "ATIVO",
+    "name": "Typescript",
+    "description": "Curso de typescript para back e front",
+    "value": 1500
+}
