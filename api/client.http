@@ -16,6 +16,10 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/users
 
+###
+
+DELETE http://localhost:3000/users/b16ce1c6-7569-46c8-b1ad-2da7a01fa909
+
 //
 
 //HTTP EXPENSES
@@ -105,3 +109,7 @@ Content-Type: application/json
     "status": "ATIVO"
 
 }
+
+
+DELETE http://localhost:3000/franchises/
+
