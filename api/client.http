@@ -84,6 +84,22 @@ Content-Type: application/json
  DELETE http://localhost:3000/sales/3ca8df8c-aa87-46a1-8117-28f66d69d440
 
 
+####
+POST http://localhost:3000/sales
+Content-Type: application/json
+
+{
+    "modalidade": "ONLINE",
+    "coursedId": "978b5109-092f-4fe7-947b-06e7fb87710c",
+    "nomeAluno": "Sandro",
+    "email": "teste@teste.com",
+    "telefone": "32554gfgff",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}
+
+
 // HTTP FRANCHISES
 ###
 POST http://localhost:3000/franchises
