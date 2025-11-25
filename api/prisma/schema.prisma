@@ -41,8 +41,8 @@ model Sale {
   modalidade    Modalidade
   courseId      String
   nomeAluno     String
-  email         String
-  telefone      String?
+  email         String  @unique
+  telefone      String? @unique
   valorBruto    Float
   valorLiquido  Float
   dataVenda     DateTime   @default(now())
@@ -58,8 +58,8 @@ enum Modalidade {
 model  collaborator {
   id String @id @default(uuid())
   name String 
-  phoneNumber String
-  email String
+  phoneNumber String @unique
+  email String @unique
   wage Float
   sector String
   status StatusCollaborator
@@ -78,8 +78,8 @@ model Franchises {
   city String
   state String
   responsible String
-  phoneNumber String 
-  email String
+  phoneNumber String @unique
+  email String @unique
   createdAt DateTime @default(now())
   status StatusFranchises
 }
