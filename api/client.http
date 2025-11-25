@@ -20,7 +20,21 @@ GET http://localhost:3000/users
 
 DELETE http://localhost:3000/users/b16ce1c6-7569-46c8-b1ad-2da7a01fa909
 
+###
+PUT http://localhost:3000/users/
+Content-Type: application/json
 
+{
+ "name": "Max",
+ "phoneNumber": "329434343",
+ "email": "max@gmail.com",
+ "wage": 5000, 
+ "sector": "Tecnologia" ,
+ "status": "ATIVO"
+ 
+}
+
+//
 
 //HTTP EXPENSES
 
