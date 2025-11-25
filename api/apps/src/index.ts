@@ -9,6 +9,7 @@ import { router as updateUser } from './functions/users/update-users'
 import { router as createSales } from './functions/sales/create-sales'
 import { router as getAllSales } from './functions/sales/get-all-sales'
 import { router as deleteSales } from './functions/sales/delete-sales'
+import { router as updateSales } from './functions/users/update-sales'
 
 import { router as createExpenses } from './functions/expenses/create-expenses'
 import { router as getAllExpenses } from './functions/expenses/get-all-expenses'
@@ -17,11 +18,7 @@ import { router as deleteExpenses } from './functions/expenses/delete-expenses'
 import { router as createCourses } from './functions/Courses/create-courses'
 import { router as getAllCourses } from './functions/Courses/get-all-courses'
 import { router as deleteCourses } from './functions/Courses/delete-courses'
-
-import { router as createFranchise } from './functions/franchises/create-franchise'
-import { router as getAllFranchise } from './functions/franchises/get-all-franchises'
-import { router as updateFranchises } from './functions/franchises/update-franchises'
-import { router as deleteFranchise } from './functions/franchises/delete-franchise'
+import { router as updateCourses } from './functions/users/update-courses'
 const app = express()
 
 app.use(express.json())
@@ -36,6 +33,7 @@ app.use(updateUser)
 app.use(createSales)
 app.use(getAllSales)
 app.use(deleteSales)
+app.use(updateSales)
 
 //Router Expenses
 app.use(createExpenses)
@@ -46,13 +44,10 @@ app.use(deleteExpenses)
 app.use(createCourses)
 app.use(getAllCourses)
 app.use(deleteCourses)
+app.use(updateCourses)
 
-//Router Franchise
-app.use(createFranchise)
-app.use(getAllFranchise)
-app.use(updateFranchises)
-app.use(deleteFranchise)
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000')
 })
+
