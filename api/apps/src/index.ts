@@ -9,6 +9,8 @@ import { router as getAllExpenses } from './functions/expenses/get-all-expenses'
 
 import { router as createCourses } from './functions/Courses/create-courses'
 import { router as getAllCourses } from './functions/Courses/get-all-courses'
+import { router as deleteCourses } from './functions/Courses/delete-courses'
+import { router as updateCourses } from './functions/Courses/update-courses'
 const app = express()
 
 app.use(express.json())
@@ -17,6 +19,8 @@ app.use(express.json())
 app.use(createUser)
 app.use(getAll)
 
+//Router Sales
+
 //Router Expenses
 app.use(createExpenses)
 app.use(getAllExpenses)
@@ -24,6 +28,8 @@ app.use(getAllExpenses)
 //Router Courses
 app.use(createCourses)
 app.use(getAllCourses)
+app.use(deleteCourses)
+app.use(updateCourses)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
