@@ -20,11 +20,25 @@ import { router as getAllCourses } from './functions/Courses/get-all-courses'
 import { router as deleteCourses } from './functions/Courses/delete-courses'
 import { router as updateCourses } from './functions/users/update-courses'
 import { router as updateCourses } from './functions/Courses/update-courses'
+import { router as updateExpenses } from './functions/expenses/update-expenses'
 const app = express()
 
 app.use(express.json())
 //Router Collaborator
 // app.use(router)
+
+app.use(createUser)
+app.use(getAll)
+
+//Router Sales
+
+//Router Expenses
+app.use(createExpenses)
+app.use(getAllExpenses)
+app.use(deleteExpenses)
+
+//Router Courses
+
 app.use(createUser)
 app.use(getAll)
 app.use(deleteUser)
@@ -48,6 +62,8 @@ app.use(createCourses)
 app.use(getAllCourses)
 app.use(deleteCourses)
 app.use(updateCourses)
+
+app.use(updateExpenses)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {

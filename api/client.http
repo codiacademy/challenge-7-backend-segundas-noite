@@ -66,3 +66,18 @@ Content-Type: application/json
     "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
     "value": 1500
 }
+###
+
+DELETE http://localhost:3000/expenses/10bb5412-6c10-48c9-a33d-bcb0b9279bbd
+###
+PUT http://localhost:3000/expenses/46bee814-3aa6-461c-b335-472fc3e58bd7
+Content-Type: application/json 
+
+{
+    "name": "Reabastecimento",
+    "description": "Lanche",
+    "value": 47.5,
+    "type": "Variavel",
+    "date": "2025-10-12"
+
+}
