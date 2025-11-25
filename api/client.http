@@ -1,19 +1,18 @@
-//HTTP COLLABORATOR
-
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
- "name": "Max",
+ "name": "Vanessa Samuel",
  "phoneNumber": "329434343",
- "email": "max@gmail.com",
- "wage": 5000, 
+ "email": "vanessamuel@gmail.com",
+ "wage": 5500, 
  "sector": "Tecnologia" ,
  "status": "ATIVO"
  
 }
 
 ###
+GET http://localhost:3000/users
 GET http://localhost:3000/users
 
 ###
@@ -29,10 +28,10 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Telefone",
-    "description": "Telefone São Mateus",
-    "value": 150,
-    "type": "Fixa",
+    "name": "Luz",
+    "description": "Luz São Mateus",
+    "value": 126.5,
+    "type": "Variavel",
     "date": "2025-10-10"
 
 }
@@ -49,8 +48,8 @@ Content-Type: application/json
 {
     "image": "fdgdfgdd",
     "status": "ATIVO",
-    "name": "Javascript",
-    "description": "Curso para quem quer aprender a progrmar com JavaScript e SpringBoot",
+    "name": "Java",
+    "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
     "value": 1500
 }
 
@@ -58,37 +57,32 @@ Content-Type: application/json
 GET http://localhost:3000/courses
 
 ###
-GET http://localhost:3000/sales
 
-####
-POST http://localhost:3000/sales
+DELETE http://localhost:3000/courses/27f2a25e-0972-4d4a-a3ab-775449989351
+
+PUT http://localhost:3000/courses/
 Content-Type: application/json
 
 {
-    "modalidade": "ONLINE",
-    "coursedId": "978b5109-092f-4fe7-947b-06e7fb87710c",
-    "nomeAluno": "Sandro",
-    "email": "teste@teste.com",
-    "telefone": "32554gfgff",
-    "valorBruto": 1500,
-    "valorLiquido":1356
-
+    "image": "fdgdfgdd",
+    "status": "ATIVO",
+    "name": "Java",
+    "description": "Curso para quem quer aprender a progrmar com Java e SpringBoot",
+    "value": 1500
 }
-
-
-//Franchises
 ###
-POST http://localhost:3000/franchises
-Content-Type: application/json
+
+DELETE http://localhost:3000/expenses/10bb5412-6c10-48c9-a33d-bcb0b9279bbd
+###
+PUT http://localhost:3000/expenses/46bee814-3aa6-461c-b335-472fc3e58bd7
+Content-Type: application/json 
 
 {
-    "name": "Unidade São Mateus",
-    "city": "Juiz de Fora",
-    "state": "Minas Gerais",
-    "responsible":"Yuri",
-    "phoneNumber": "311545454",
-    "email": "codisaomateus@gmail.com",
-    "status": "ATIVO"
+    "name": "Reabastecimento",
+    "description": "Lanche",
+    "value": 47.5,
+    "type": "Variavel",
+    "date": "2025-10-12"
 
 }
 
