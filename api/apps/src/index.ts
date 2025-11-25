@@ -19,6 +19,7 @@ import { router as createCourses } from './functions/Courses/create-courses'
 import { router as getAllCourses } from './functions/Courses/get-all-courses'
 import { router as deleteCourses } from './functions/Courses/delete-courses'
 import { router as updateCourses } from './functions/users/update-courses'
+import { router as updateCourses } from './functions/Courses/update-courses'
 const app = express()
 
 app.use(express.json())
@@ -34,6 +35,8 @@ app.use(createSales)
 app.use(getAllSales)
 app.use(deleteSales)
 app.use(updateSales)
+
+//Router Sales
 
 //Router Expenses
 app.use(createExpenses)
