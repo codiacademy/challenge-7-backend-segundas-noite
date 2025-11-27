@@ -3,21 +3,21 @@ export const router = express.Router()
 
 import { prisma } from '../../lib/prisma.js'
 
-router.delete('/courses/:id', async (req, res) => {
+router.delete('/franchises/:id', async (req, res) => {
   try {
     const { id } = req.params
 
-    const course = await prisma.courses.delete({
+    const franchises = await prisma.franchises.delete({
       where: { id },
     })
 
     return res.status(200).json({
-      message: 'Curso deletado com sucesso',
-      course,
+      message: 'Franquia deletada com sucesso',
+      franchises,
     })
   } catch (error: any) {
     if (error.code === 'P2025') {
-      return res.status(404).json({ message: 'Curso não encontrado' })
+      return res.status(404).json({ message: 'Franquia não encontrada' })
     }
 
     console.error(error)
