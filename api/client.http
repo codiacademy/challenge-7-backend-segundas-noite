@@ -195,6 +195,21 @@ Content-Type: application/json
 ###
 DELETE http://localhost:3000/sales/19c6b461-b0a2-4b9b-8e68-46703ed90fde
 
+####
+PUT http://localhost:3000/sales/084cd295-32d9-4dad-ba80-ceceaf380c2c
+Content-Type: application/json
+
+{
+    "modalidade": "ONLINE",
+    "coursedId": "e1c44acf-5e86-456b-9cd5-329a335cb210",
+    "nomeAluno": "Sandro",
+    "email": "trerfrer@teste.com",
+    "telefone": "32554errrgff",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}
+
 
 
 
