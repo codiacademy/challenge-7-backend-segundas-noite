@@ -41,11 +41,11 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Agua",
-    "description": "Luz São Mateus",
+    "name": "Teste",
+    "description": "Luz RIo branco",
     "value": 150.5,
-    "type": "Variavel",
-    "date": "2025-10-10"
+    "type": "Fixa",
+    "date": "2024-10-10"
 
 }
 
@@ -210,6 +210,16 @@ Content-Type: application/json
 
 }
 
+
+//Metrics
+###
+GET  http://localhost:3000/expenses-day/2025-11-10T00:00:00.000Z
+
+###
+GET http://localhost:3000/expenses-month/2024-09-10T00:00:00.000Z
+
+###
+GET http://localhost:3000/expenses-year/2024
 
 
 

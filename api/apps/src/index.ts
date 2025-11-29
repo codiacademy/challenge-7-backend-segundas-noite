@@ -26,6 +26,10 @@ import { router as getAllFranchise } from './functions/franchises/get-all-franch
 import { router as deleteFranchise } from './functions/franchises/delete-franchises'
 import { router as updateFranchise } from './functions/franchises/update-franchises'
 
+import { router as getExpensesDay } from './functions/metrics/metrics-expenses/filter-expenses-day'
+import { router as getExpensesMonth } from './functions/metrics/metrics-expenses/filter-expenses-month'
+import { router as getExpensesYear } from './functions/metrics/metrics-expenses/filter-expenses-year'
+
 const app = express()
 
 app.use(express.json())
@@ -59,6 +63,11 @@ app.use(createFranchise)
 app.use(getAllFranchise)
 app.use(deleteFranchise)
 app.use(updateFranchise)
+
+//Metrics Expenses
+app.use(getExpensesDay)
+app.use(getExpensesMonth)
+app.use(getExpensesYear)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
