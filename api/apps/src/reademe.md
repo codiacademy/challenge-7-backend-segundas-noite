@@ -1,1 +1,2 @@
 Ira sair
+git ignore
