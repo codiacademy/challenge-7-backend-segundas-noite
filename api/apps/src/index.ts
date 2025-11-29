@@ -30,6 +30,10 @@ import { router as getExpensesDay } from './functions/metrics/metrics-expenses/f
 import { router as getExpensesMonth } from './functions/metrics/metrics-expenses/filter-expenses-month'
 import { router as getExpensesYear } from './functions/metrics/metrics-expenses/filter-expenses-year'
 
+import { router as getSalesDay } from './functions/metrics/metrics-sales/filter-sales-day'
+import { router as getSalesMonth } from './functions/metrics/metrics-sales/filter-sales-month'
+import { router as getSalesYear } from './functions/metrics/metrics-sales/filter-sales-year'
+
 const app = express()
 
 app.use(express.json())
@@ -68,6 +72,11 @@ app.use(updateFranchise)
 app.use(getExpensesDay)
 app.use(getExpensesMonth)
 app.use(getExpensesYear)
+
+//Metrics Sales
+app.use(getSalesDay)
+app.use(getSalesMonth)
+app.use(getSalesYear)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
