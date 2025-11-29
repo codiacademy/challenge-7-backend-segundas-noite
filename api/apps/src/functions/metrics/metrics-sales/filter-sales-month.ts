@@ -21,7 +21,7 @@ router.get('/sales-month/:date', async (req, res) => {
         },
       },
       orderBy: {
-        dataVenda: 'desc',
+        dataVenda: 'asc',
       },
     })
 
