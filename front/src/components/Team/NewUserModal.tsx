@@ -105,43 +105,23 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                 className="rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
               />
             </div>
-            <div className="mt-3 flex items-center gap-3">
-              <Select value={cargo} onValueChange={setCargo} required>
-                <SelectTrigger className="flex w-1/2 border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Cargo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Instrutor">Instrutor</SelectItem>
-                  <SelectItem value="Coordenador">Coordenador</SelectItem>
-                  <SelectItem value="Assistente">Assistente</SelectItem>
-                  <SelectItem value="Gerente">Gerente</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={status} onValueChange={setStatus} required>
-                <SelectTrigger className="flex w-1/2 border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Ativo">Ativo</SelectItem>
-                  <SelectItem value="Ferias">Ferias</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
             <div>
+              <label> Cargo:</label>
               <Select
                 value={departament}
                 onValueChange={setDepartament}
                 required
               >
                 <SelectTrigger className="border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Selecione o departamento" />
+                  <SelectValue placeholder="Selecione o cargo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Frontend">Frontend</SelectItem>
-                  <SelectItem value="Backend">Backend</SelectItem>
-                  <SelectItem value="Mobile">Mobile</SelectItem>
+                  <SelectItem value="Frontend">Desenvolvedor</SelectItem>
+                  <SelectItem value="Backend">Mentor</SelectItem>
+                  <SelectItem value="Mobile">CEO</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Financeiro">Financeiro</SelectItem>
+                  <SelectItem value="Financeiro">Recepcionista</SelectItem>
                 </SelectContent>
               </Select>
             </div>

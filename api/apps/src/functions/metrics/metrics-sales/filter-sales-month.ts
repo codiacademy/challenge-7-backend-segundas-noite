@@ -3,7 +3,7 @@ import { prisma } from '../../../lib/prisma.js'
 import { date } from 'zod'
 export const router = express.Router()
 
-router.get('/expenses-month/:date', async (req, res) => {
+router.get('/sales-month/:date', async (req, res) => {
   try {
     const dateQuery = new Date(req.params.date)
     const firstDay = new Date(
@@ -13,20 +13,19 @@ router.get('/expenses-month/:date', async (req, res) => {
       Date.UTC(dateQuery.getFullYear(), dateQuery.getMonth() + 1, 1)
     )
 
-    const expenses = await prisma.expenses.findMany({
+    const sales = await prisma.sale.findMany({
       where: {
-        date: {
+        dataVenda: {
           gte: firstDay,
           lt: lastDay,
         },
-        type: 'Variavel',
       },
       orderBy: {
-        createdAt: 'desc',
+        dataVenda: 'asc',
       },
     })
 
-    return res.status(200).json(expenses)
+    return res.status(200).json(sales)
   } catch (error) {
     if (error) {
       console.log(error)

@@ -1,6 +1,6 @@
 import express from 'express'
 import { prisma } from '../../../lib/prisma.js'
-import { get } from 'http'
+
 export const router = express.Router()
 
 router.get('/expenses-day/:date', async (req, res) => {

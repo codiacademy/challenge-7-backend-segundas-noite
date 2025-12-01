@@ -41,11 +41,11 @@ POST http://localhost:3000/expenses
 Content-Type: application/json 
 
 {
-    "name": "Agua",
-    "description": "Luz São Mateus",
+    "name": "Teste",
+    "description": "Luz RIo branco",
     "value": 150.5,
-    "type": "Variavel",
-    "date": "2025-10-10"
+    "type": "Fixa",
+    "date": "2024-10-10"
 
 }
 
@@ -195,6 +195,45 @@ Content-Type: application/json
 ###
 DELETE http://localhost:3000/sales/19c6b461-b0a2-4b9b-8e68-46703ed90fde
 
+####
+PUT http://localhost:3000/sales/084cd295-32d9-4dad-ba80-ceceaf380c2c
+Content-Type: application/json
+
+{
+    "modalidade": "ONLINE",
+    "coursedId": "e1c44acf-5e86-456b-9cd5-329a335cb210",
+    "nomeAluno": "Sandro",
+    "email": "trerfrer@teste.com",
+    "telefone": "32554errrgff",
+    "valorBruto": 1500,
+    "valorLiquido":1356
+
+}
+
+
+//Metrics
+
+//Expenses
+###
+GET  http://localhost:3000/expenses-day/2024-09-10
+
+###
+GET http://localhost:3000/expenses-month/2024-09-10T00:00:00.000Z
+
+###
+GET http://localhost:3000/expenses-year/2024
+
+
+//Sales
+
+###
+GET  http://localhost:3000/sales-day/2025-11-27
+
+###
+GET http://localhost:3000/sales-month/2025-11-10T00:00:00.000Z
+
+###
+GET http://localhost:3000/sales-year/2025
 
 
 

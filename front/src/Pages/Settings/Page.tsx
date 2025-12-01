@@ -17,6 +17,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Plus,
   Save,
   Shield,
   ShieldAlert,
@@ -25,6 +26,7 @@ import {
 import Logo from "../../assests/CodiLogoAside.png";
 import { CardSessoes } from "@/components/Settings/ActiveSessionCard";
 import { useState } from "react";
+import { FranchisesForm } from "@/components/Franquias/FranchisesForm";
 
 const sessoesAtivas = [
   {
@@ -373,8 +375,14 @@ export function Settings() {
             <div className="flex w-full flex-col gap-5 rounded-lg bg-white px-12 py-7">
               {/* Header */}
               <div>
-                <h1 className="flex items-center gap-2 text-3xl font-semibold text-black">
-                  <Building2 size={32} /> Seleção de Unidade
+                <h1 className="flex items-center justify-between gap-2 text-3xl font-semibold text-black">
+                  <span className="flex gap-2">
+                    <Building2 size={32} /> Seleção de Unidade
+                  </span>
+                  <FranchisesForm
+                    name="Cadastre sua nova unidade"
+                    trigger="Nova Franquia"
+                  />
                 </h1>
               </div>
               {/* Seleção de unidade */}
