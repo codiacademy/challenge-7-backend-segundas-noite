@@ -1,12 +1,13 @@
 import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
+import { franchiseSchemaBody } from '../../models/franchise-models'
 
 router.put('/franchises/:id', async (req, res) => {
   try {
     const { id } = req.params
     const { name, city, state, responsible, phoneNumber, email, status } =
-      req.body
+      franchiseSchemaBody.parse(req.body)
 
     const updatedFranchises = await prisma.franchises.update({
       where: { id },

@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
- 
 }
 
 datasource db {
@@ -12,46 +11,46 @@ datasource db {
 }
 
 model Expenses {
-  id String @id @default(uuid())
-  name String
+  id          String   @id @default(uuid())
+  name        String
   description String
-  value Float
-  type String
-  date DateTime 
-  createdAt DateTime @default(now())
-
+  value       Float
+  type        String
+  date        DateTime
+  createdAt   DateTime @default(now())
 }
+
 //tabela de Cursos
 model Courses {
-  id String @id @default(uuid())
-  image String?
-  status Status
-  name String
+  id          String   @id @default(uuid())
+  image       String?
+  status      Status
+  name        String
   description String
-  value Float
-  createdAt DateTime @default(now())
-
+  value       Float
+  createdAt   DateTime @default(now())
 
   sale Sale[]
-} 
+}
+
 //enum da modalidade
 enum Status {
   ATIVO
   INATIVO
 }
+
 //tabela de Vendas
 model Sale {
-  id String @id @default(uuid())
-  modalidade    Modalidade
-  courseId      String
-  nomeAluno     String
-  email         String  @unique
-  telefone      String? @unique
-  valorBruto    Float
-  valorLiquido  Float
-  dataVenda     DateTime   @default(now())
-  course Courses    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id           String     @id @default(uuid())
+  modalidade   Modalidade
+  courseId     String
+  nomeAluno    String
+  email        String     @unique
+  telefone     String?    @unique
+  valorBruto   Float
+  valorLiquido Float
+  dataVenda    DateTime   @default(now())
+  course       Courses    @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 enum Modalidade {
@@ -59,33 +58,33 @@ enum Modalidade {
   PRESENCIAL
 }
 
-model  collaborator {
-  id String @id @default(uuid())
-  name String 
-  phoneNumber String @unique
-  email String @unique
-  wage Float
-  sector String
-  status StatusCollaborator
-  createdAt DateTime @default(now())
+model collaborator {
+  id          String             @id @default(uuid())
+  name        String
+  phoneNumber String             @unique
+  email       String             @unique
+  wage        Float
+  sector      String
+  status      StatusCollaborator
+  createdAt   DateTime           @default(now())
 }
 
 enum StatusCollaborator {
-ATIVO
-INATIVO
-FERIAS
+  ATIVO
+  INATIVO
+  FERIAS
 }
 
 model Franchises {
-  id String @id @default(uuid())
-  name String
-  city String
-  state String
+  id          String           @id @default(uuid())
+  name        String
+  city        String
+  state       String
   responsible String
-  phoneNumber String @unique
-  email String @unique
-  createdAt DateTime @default(now())
-  status StatusFranchises
+  phoneNumber String           @unique
+  email       String           @unique
+  createdAt   DateTime         @default(now())
+  status      StatusFranchises
 }
 
 enum StatusFranchises {

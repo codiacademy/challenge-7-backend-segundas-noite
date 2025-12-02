@@ -1,6 +1,7 @@
 import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
+import { saleSchemaBody } from '../../models/sales-models'
 
 router.put('/sales/:id', async (req, res) => {
   try {
@@ -13,7 +14,7 @@ router.put('/sales/:id', async (req, res) => {
       telefone,
       valorBruto,
       valorLiquido,
-    } = req.body
+    } = saleSchemaBody.parse(req.body)
 
     const updateSale = await prisma.sale.update({
       where: { id },

@@ -1,11 +1,12 @@
 import express from 'express'
 import { prisma } from '../../lib/prisma.js'
 export const router = express.Router()
+import { franchiseSchemaBody } from '../../models/franchise-models'
 
 router.post('/franchises', async (req, res) => {
   try {
     const { name, city, state, responsible, phoneNumber, email, status } =
-      req.body
+      franchiseSchemaBody.parse(req.body)
 
     await prisma.franchises.create({
       data: {

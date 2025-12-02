@@ -1,6 +1,7 @@
 import express from 'express'
 import { prisma } from '../../lib/prisma'
 export const router = express.Router()
+import { saleSchemaBody } from '../../models/sales-models'
 
 router.post('/sales', async (req, res) => {
   try {
@@ -12,7 +13,7 @@ router.post('/sales', async (req, res) => {
       telefone,
       valorBruto,
       valorLiquido,
-    } = req.body
+    } = saleSchemaBody.parse(req.body)
 
     await prisma.sale.create({
       data: {

@@ -1,11 +1,14 @@
 import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
+import { courseSchemaBody } from '../../models/courses-models'
 
 router.put('/courses/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const { image, name, description, value, status } = req.body
+    const { image, name, description, value, status } = courseSchemaBody.parse(
+      req.body
+    )
 
     const updatedCourse = await prisma.courses.update({
       where: { id },
