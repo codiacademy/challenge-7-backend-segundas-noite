@@ -1,32 +1,42 @@
+import codiCashLogo from "../../assests/codiCashLogo.png";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-
-import codiCashLogo from "../../assests/codiCashLogo.png";
-
-import { useNavigate } from "react-router-dom";
-
-import { Mail, LockKeyhole } from "lucide-react";
 import { useState } from "react";
-import { fakeLogin } from "@/services/authService";
+import { useMutation } from "@tanstack/react-query";
+import { postauthenticate } from "../../http/postAuthenticate";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import { LockKeyhole, Mail } from "lucide-react";
 
 type FormData = {
   email: string;
   password: string;
 };
+
 export function Login() {
+  const [loading, setLoading] = useState(false);
+  const { register, handleSubmit } = useForm<FormData>();
   const navigate = useNavigate();
 
-  const [, setLoading] = useState(false);
-  const { register, handleSubmit } = useForm<FormData>();
+  const { mutateAsync: postAuthenticateFN } = useMutation({
+    mutationFn: postauthenticate,
+  });
 
   async function handleLogin(data: FormData) {
     setLoading(true);
     try {
-      const { token } = await fakeLogin(data);
-      localStorage.setItem("authToken", token);
+      const response = await postAuthenticateFN(data);
+
+      // salva token
+      localStorage.setItem("authToken", response.token);
+
+      // redireciona
       navigate("/dashboard");
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.message);
+        alert("Email ou senha inválidos.");
+      }
     } finally {
       setLoading(false);
     }
@@ -38,7 +48,9 @@ export function Login() {
           onSubmit={handleSubmit(handleLogin)}
           className="my-10 w-85 text-center text-amber-100"
         >
-          <h1 className="mb-6 text-2xl font-bold text-white">Faça seu login</h1>
+          <h1 className="mb-6 text-2xl font-bold text-white">
+            32Faça seu login
+          </h1>
 
           <div className="flex h-14 items-center gap-3 rounded-lg border border-zinc-900 bg-zinc-800 px-3 py-2">
             <Mail />

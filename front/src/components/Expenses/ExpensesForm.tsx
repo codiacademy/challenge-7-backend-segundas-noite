@@ -36,6 +36,12 @@ const formSchema = z.object({
     message: "O campo tipo despesa é obrigatório",
   }),
 
+  date: z.string({ message: "O campo data é obrigatório" }),
+
+  name: z
+    .string({ message: "O campo nome é obrigatório" })
+    .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
+
   description: z.string({
     message: "O campo descrição da despesa é obrigatório",
   }),
@@ -99,6 +105,20 @@ export function ExpensesForm({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
           <form onSubmit={handleSubmit(confirmExpense)}>
+            <div>
+              <span className="text-left">Nome da despesa:</span>
+              <Input
+                placeholder="Nome da despesa"
+                type="text"
+                {...register("name")}
+                required
+              />
+              {errors?.name && (
+                <span className="mb-4 text-left text-sm text-red-500">
+                  {errors.name.message}
+                </span>
+              )}
+            </div>
             <span>Tipo de despesa</span>
             <Controller
               name="expenses"
@@ -134,6 +154,20 @@ export function ExpensesForm({
               {errors?.description && (
                 <span className="mb-4 text-left text-sm text-red-500">
                   {errors.description.message}
+                </span>
+              )}
+            </div>
+            <div>
+              <span className="text-left">Data</span>
+              <Input
+                placeholder="Data da despesa"
+                type="text"
+                {...register("date")}
+                required
+              />
+              {errors?.date && (
+                <span className="mb-4 text-left text-sm text-red-500">
+                  {errors.date.message}
                 </span>
               )}
             </div>

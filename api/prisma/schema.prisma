@@ -48,6 +48,10 @@ model Sale {
   email         String  @unique
   telefone      String? @unique
   valorBruto    Float
+  desconto      Float?
+  comisao       Float?
+  imposto       Float?
+  taxaCartao    Float?
   valorLiquido  Float
   dataVenda     DateTime   @default(now())
   course Courses    @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -66,6 +70,7 @@ model  collaborator {
   email String @unique
   wage Float
   sector String
+  password String?
   status StatusCollaborator
   createdAt DateTime @default(now())
 }
