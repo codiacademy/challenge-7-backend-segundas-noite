@@ -1,40 +1,51 @@
 import express from 'express'
+import cors from 'cors'
 
 // import router from './functions/users/delete-users'
-import { router as createUser } from './functions/users/create-users'
-import { router as getAll } from './functions/users/get-all-users'
-import { router as deleteUser } from './functions/users/delete-users'
-import { router as updateUser } from './functions/users/update-users'
+import { router as createUser } from './functions/users/create-users.ts'
+import { router as getAll } from './functions/users/get-all-users.ts'
+import { router as deleteUser } from './functions/users/delete-users.ts'
+import { router as updateUser } from './functions/users/update-users.ts'
 
-import { router as createSales } from './functions/sales/create-sales'
-import { router as getAllSales } from './functions/sales/get-all-sales'
-import { router as deleteSales } from './functions/sales/delete-sales'
-import { router as updateSales } from './functions/sales/update-sales'
+import { router as createSales } from './functions/sales/create-sales.ts'
+import { router as getAllSales } from './functions/sales/get-all-sales.ts'
+import { router as deleteSales } from './functions/sales/delete-sales.ts'
+import { router as updateSales } from './functions/sales/update-sales.ts'
 
-import { router as createExpenses } from './functions/expenses/create-expenses'
-import { router as getAllExpenses } from './functions/expenses/get-all-expenses'
-import { router as deleteExpenses } from './functions/expenses/delete-expenses'
-import { router as updateExpenses } from './functions/expenses/update-expenses'
+import { router as createExpenses } from './functions/expenses/create-expenses.ts'
+import { router as getAllExpenses } from './functions/expenses/get-all-expenses.ts'
+import { router as deleteExpenses } from './functions/expenses/delete-expenses.ts'
+import { router as updateExpenses } from './functions/expenses/update-expenses.ts'
 
-import { router as createCourses } from './functions/Courses/create-courses'
-import { router as getAllCourses } from './functions/Courses/get-all-courses'
-import { router as deleteCourses } from './functions/Courses/delete-courses'
-import { router as updateCourses } from './functions/Courses/update-courses'
+import { router as createCourses } from './functions/Courses/create-courses.ts'
+import { router as getAllCourses } from './functions/Courses/get-all-courses.ts'
+import { router as deleteCourses } from './functions/Courses/delete-courses.ts'
+import { router as updateCourses } from './functions/Courses/update-courses.ts'
 
-import { router as createFranchise } from './functions/franchises/create-franchises'
-import { router as getAllFranchise } from './functions/franchises/get-all-franchises'
-import { router as deleteFranchise } from './functions/franchises/delete-franchises'
-import { router as updateFranchise } from './functions/franchises/update-franchises'
+import { router as createFranchise } from './functions/franchises/create-franchises.ts'
+import { router as getAllFranchise } from './functions/franchises/get-all-franchises.ts'
+import { router as deleteFranchise } from './functions/franchises/delete-franchises.ts'
+import { router as updateFranchise } from './functions/franchises/update-franchises.ts'
 
-import { router as getExpensesDay } from './functions/metrics/metrics-expenses/filter-expenses-day'
-import { router as getExpensesMonth } from './functions/metrics/metrics-expenses/filter-expenses-month'
-import { router as getExpensesYear } from './functions/metrics/metrics-expenses/filter-expenses-year'
+import { router as getExpensesDay } from './functions/metrics/metrics-expenses/filter-expenses-day.ts'
+import { router as getExpensesMonth } from './functions/metrics/metrics-expenses/filter-expenses-month.ts'
+import { router as getExpensesYear } from './functions/metrics/metrics-expenses/filter-expenses-year.ts'
 
-import { router as getSalesDay } from './functions/metrics/metrics-sales/filter-sales-day'
-import { router as getSalesMonth } from './functions/metrics/metrics-sales/filter-sales-month'
-import { router as getSalesYear } from './functions/metrics/metrics-sales/filter-sales-year'
+import { router as getSalesDay } from './functions/metrics/metrics-sales/filter-sales-day.ts'
+import { router as getSalesMonth } from './functions/metrics/metrics-sales/filter-sales-month.ts'
+import { router as getSalesYear } from './functions/metrics/metrics-sales/filter-sales-year.ts'
+
+import { router as autenticate } from './functions/autenticate.ts'
 
 const app = express()
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+)
 
 app.use(express.json())
 //Router Collaborator
@@ -77,6 +88,8 @@ app.use(getExpensesYear)
 app.use(getSalesDay)
 app.use(getSalesMonth)
 app.use(getSalesYear)
+
+app.use(autenticate)
 
 // Informando onde o servidor estará rodando
 app.listen(3000, () => {
