@@ -1,7 +1,7 @@
 import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
-import { userSchemaBody } from '../../models/users-models'
+import { userSchemaBody } from '../../models/users-models.ts'
 
 router.put('/users/:id', async (req, res) => {
   try {

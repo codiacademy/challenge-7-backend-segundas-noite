@@ -70,6 +70,7 @@ model  collaborator {
   email String @unique
   wage Float
   sector String
+  password String?
   status StatusCollaborator
   createdAt DateTime @default(now())
 }

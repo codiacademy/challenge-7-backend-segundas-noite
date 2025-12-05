@@ -11,41 +11,35 @@ type modalProps = {
   haandleOpenModalNew: () => void;
   onAddUser: (user: User) => void;
 };
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  salario: number;
-  cargo: string;
-  status: string;
-  departament: string;
-};
+import type { User } from "../../Pages/Team/Page";
+import { CreateCollaborator } from "@/http/collaborator/createCollaborator";
+import { toast } from "sonner";
 
 export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [salario, setSalario] = useState("");
-  const [cargo, setCargo] = useState("");
+  const [sector, setSector] = useState("");
   const [status, setStatus] = useState("");
-  const [departament, setDepartament] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleAddUser(e: React.FormEvent) {
+  async function handleAddUser(e: React.FormEvent) {
     e.preventDefault();
 
-    const newUser: User = {
+    const newUser: User = await CreateCollaborator({
       id: String(Date.now()),
       name,
       email,
-      phone,
-      salario: Number(salario),
-      cargo,
+      phoneNumber,
+      wage: Number(salario),
+      sector,
       status,
-      departament,
-    };
+      password,
+    });
 
     onAddUser(newUser);
+    toast.success("Colaborador criado com sucesso!");
     haandleOpenModalNew();
   }
   return (
@@ -79,8 +73,8 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                 <input
                   required
                   type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   className="w-full rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
                 />
               </div>
@@ -108,22 +102,40 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
 
             <div>
               <label> Cargo:</label>
-              <Select
-                value={departament}
-                onValueChange={setDepartament}
-                required
-              >
+              <Select value={sector} onValueChange={setSector} required>
                 <SelectTrigger className="border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Selecione o cargo" />
+                  <SelectValue placeholder="Selecione o departamento" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Frontend">Desenvolvedor</SelectItem>
-                  <SelectItem value="Backend">Mentor</SelectItem>
-                  <SelectItem value="Mobile">CEO</SelectItem>
+                  <SelectItem value="Desenvolvedor">Desenvolvedor</SelectItem>
+                  <SelectItem value="Mentor">Mentor</SelectItem>
+                  <SelectItem value="CEO">CEO</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Financeiro">Recepcionista</SelectItem>
+                  <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label> Status:</label>
+              <Select value={status} onValueChange={setStatus} required>
+                <SelectTrigger className="w-full border border-gray-300 p-5 shadow-lg">
+                  <SelectValue placeholder="Selecione o departamento" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ATIVO">ATIVO</SelectItem>
+                  <SelectItem value="INATIVO">INATIVO</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col">
+              <label> Senha:</label>
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
+              />
             </div>
             <button
               type="submit"
