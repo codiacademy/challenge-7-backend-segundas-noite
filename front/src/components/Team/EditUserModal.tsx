@@ -7,17 +7,7 @@ import {
   SelectContent,
   SelectValue,
 } from "@/components/ui/select";
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  salario: number;
-  cargo: string;
-  status: string;
-  departament: string;
-};
+import type { User } from "../../Pages/Team/Page";
 
 type modalProps = {
   close: () => void;
@@ -52,7 +42,7 @@ export function AlterarModal({ close, user }: modalProps) {
                 <input
                   required
                   type="text"
-                  value={user?.phone}
+                  value={user?.phoneNumber}
                   className="w-full rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
                 />
               </div>
@@ -70,47 +60,39 @@ export function AlterarModal({ close, user }: modalProps) {
               <label> Salario:</label>
               <input
                 required
-                value={user?.salario}
+                value={user?.wage}
                 type="number"
                 className="rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
               />
             </div>
-            <div className="mt-3 flex items-center gap-3">
-              <Select required>
-                <SelectTrigger className="flex w-1/2 border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Cargo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Instrutor">Instrutor</SelectItem>
-                  <SelectItem value="Coordenador">Coordenador</SelectItem>
-                  <SelectItem value="Assistente">Assistente</SelectItem>
-                  <SelectItem value="Gerente">Gerente</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select required>
-                <SelectTrigger className="flex w-1/2 border border-gray-300 p-5 shadow-lg">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Ativo">Ativo</SelectItem>
-                  <SelectItem value="Ferias">Ferias</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
             <div>
+              <label> Cargo: </label>
               <Select required>
                 <SelectTrigger
-                  value={user?.departament}
+                  value={user?.sector}
                   className="border border-gray-300 p-5 shadow-lg"
                 >
                   <SelectValue placeholder="Selecione o departamento" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Frontend">Frontend</SelectItem>
-                  <SelectItem value="Backend">Backend</SelectItem>
-                  <SelectItem value="Mobile">Mobile</SelectItem>
+                  <SelectItem value="Desenvolvedor">Desenvolvedor</SelectItem>
+                  <SelectItem value="Mentor">Mentor</SelectItem>
+                  <SelectItem value="CEO">CEO</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Financeiro">Financeiro</SelectItem>
+                  <SelectItem value="Receptionista">Receptionista</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label> Status:</label>
+              <Select value={user?.status} required>
+                <SelectTrigger className="w-full border border-gray-300 p-5 shadow-lg">
+                  <SelectValue placeholder="Selecione o departamento" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">ATIVO</SelectItem>
+                  <SelectItem value="INACTIVE">INATIVO</SelectItem>
                 </SelectContent>
               </Select>
             </div>

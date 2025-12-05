@@ -11,135 +11,57 @@ import {
 } from "@/components/ui/select";
 import { UserCard } from "@/components/Team/TeamCard";
 import { Search, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { AllCollaborators } from "@/http/collaborator/allCollaborators";
+import { DeleteUser } from "@/http/collaborator/deleteCollaborator";
+import { toast } from "sonner";
 
 {
   /* tipos dos dados dos usuarios */
 }
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  departament: string;
+  phoneNumber: string;
+  sector: string;
   status: string;
-  cargo: string;
-  salario: number;
+  wage: number;
+  password: string;
 };
 
 export function Team() {
-  const [userList, setUserList] = useState<User[]>([
-    {
-      id: "1",
-      name: "Mariana Silva",
-      email: "mariana.silva@gmail.com",
-      phone: "(11) 98888-1234",
-      departament: "Frontend",
-      cargo: "Instrutor",
-      salario: 5500,
-      status: "Ativo",
-    },
-    {
-      id: "2",
-      name: "Carlos Souza",
-      email: "carlos.souza@gmail.com",
-      phone: "(21) 97777-4321",
-      departament: "Backend",
-      cargo: "Coordenador",
-      salario: 8500,
-      status: "Ativo",
-    },
-    {
-      id: "3",
-      name: "Fernanda Lima",
-      email: "fernanda.lima@gmail.com",
-      phone: "(31) 96666-9876",
-      departament: "Mobile",
-      cargo: "Assistente",
-      salario: 4200,
-      status: "Férias",
-    },
-    {
-      id: "4",
-      name: "Rafael Costa",
-      email: "rafael.costa@gmail.com",
-      phone: "(41) 95555-6543",
-      departament: "Marketing",
-      cargo: "Gerente",
-      salario: 9500,
-      status: "Ativo",
-    },
-    {
-      id: "5",
-      name: "Isabela Martins",
-      email: "isabela.martins@gmail.com",
-      phone: "(51) 94444-3210",
-      departament: "Financeiro",
-      cargo: "Assistente",
-      salario: 4700,
-      status: "Ferias",
-    },
-    {
-      id: "6",
-      name: "Lucas Almeida",
-      email: "lucas.almeida@gmail.com",
-      phone: "(61) 93333-1122",
-      departament: "Frontend",
-      cargo: "Instrutor",
-      salario: 5200,
-      status: "Ativo",
-    },
-    {
-      id: "7",
-      name: "Ana Pereira",
-      email: "ana.pereira@gmail.com",
-      phone: "(71) 92222-3344",
-      departament: "Backend",
-      cargo: "Coordenador",
-      salario: 8300,
-      status: "Ativo",
-    },
-    {
-      id: "8",
-      name: "Bruno Fernandes",
-      email: "bruno.fernandes@gmail.com",
-      phone: "(81) 91111-5566",
-      departament: "Mobile",
-      cargo: "Instrutor",
-      salario: 5700,
-      status: "Ativo",
-    },
-    {
-      id: "9",
-      name: "Patrícia Gomes",
-      email: "patricia.gomes@gmail.com",
-      phone: "(91) 98888-7788",
-      departament: "Marketing",
-      cargo: "Assistente",
-      salario: 4600,
-      status: "Férias",
-    },
-    {
-      id: "10",
-      name: "Gabriel Rocha",
-      email: "gabriel.rocha@gmail.com",
-      phone: "(85) 97777-8899",
-      departament: "Financeiro",
-      cargo: "Gerente",
-      salario: 9800,
-      status: "Ativo",
-    },
-    {
-      id: "11",
-      name: "Gabriela Lima",
-      email: "gabriela.lima@gmail.com",
-      phone: "(85) 97777-8899",
-      departament: "Financeiro",
-      cargo: "Coordenador",
-      salario: 9800,
-      status: "Ferias",
-    },
-  ]);
+  const [userList, setUserList] = useState<User[]>([]);
+
+  async function handleDeleteUser(id: string) {
+    const confirmDelete = window.confirm(
+      "tem certeza que deseja deletar a despesa?",
+    );
+    if (!confirmDelete) return;
+    try {
+      await DeleteUser({ id });
+      setUserList((prev) => prev.filter((user) => user.id !== id));
+      toast.success("Despesa deletada com sucesso!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao deletar despesa");
+    }
+  }
+
+  useEffect(() => {
+    async function loadCollaborators() {
+      try {
+        const data = await AllCollaborators();
+        setUserList(data); // preenche sua lista com o banco
+      } catch (error) {
+        console.error("Erro ao carregar colaboradores:", error);
+      }
+    }
+
+    loadCollaborators();
+  }, []);
+
   {
     /* Cadastro de novo user */
   }
@@ -172,7 +94,7 @@ export function Team() {
   const [selectedCargo, setSelectedCargo] = useState<string>("all");
   const filteredUsers = userList.filter((user) => {
     const matchesCargo =
-      selectedCargo === "all" || user.cargo === selectedCargo;
+      selectedCargo === "all" || user.sector === selectedCargo;
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -186,12 +108,10 @@ export function Team() {
   const membrosAtivos = filteredUsers.filter(
     (user) => user.status === "Ativo",
   ).length;
-  const departamentosUnicos = new Set(
-    filteredUsers.map((user) => user.departament),
-  );
+  const departamentosUnicos = new Set(filteredUsers.map((user) => user.sector));
   const totalDepartamentos = departamentosUnicos.size;
   const folhaPagamento = filteredUsers.reduce(
-    (acc, user) => acc + user.salario,
+    (acc, user) => acc + user.wage,
     0,
   );
 
@@ -255,14 +175,16 @@ export function Team() {
           {filteredUsers.map((user) => (
             <UserCard
               key={user.id}
+              id={user.id}
               name={user.name}
-              departament={user.departament}
+              departament={user.sector}
               email={user.email}
-              phone={user.phone}
+              phone={user.phoneNumber}
               status={user.status}
-              salario={user.salario}
-              cargo={user.cargo}
+              salario={user.wage}
+              cargo={user.sector}
               openEdit={() => handleOpenModalEdit(user.id)}
+              onDelete={() => handleDeleteUser(user.id)}
             />
           ))}
         </div>
