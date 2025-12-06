@@ -32,7 +32,14 @@ export type User = {
 };
 
 export function Team() {
+  const [users, setUsers] = useState<User[]>([]);
+
   const [userList, setUserList] = useState<User[]>([]);
+  function handleEditUser(updatedUser: User) {
+    setUserList((prev) =>
+      prev.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+    );
+  }
 
   async function handleDeleteUser(id: string) {
     const confirmDelete = window.confirm(
@@ -95,12 +102,16 @@ export function Team() {
   const filteredUsers = userList.filter((user) => {
     const matchesCargo =
       selectedCargo === "all" || user.sector === selectedCargo;
+
+    const search = searchTerm.toLowerCase();
+
     const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      user.name.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search);
 
     return matchesCargo && matchesSearch;
   });
+
   {
     /* Calculos dos totais de membros, membros ativos, departamentos, folha de pagamento */
   }
@@ -232,7 +243,11 @@ export function Team() {
           />
         )}
         {isOpenEdit && (
-          <AlterarModal close={closeEditModal} user={selectedUser} />
+          <AlterarModal
+            close={closeEditModal}
+            user={selectedUser}
+            onEditUser={handleEditUser}
+          />
         )}
       </div>
     </div>

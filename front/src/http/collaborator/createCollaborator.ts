@@ -1,7 +1,6 @@
 import { api } from "@/lib/axios";
 
 interface createUserProps {
-  id: string;
   name: string;
   email: string;
   phoneNumber: string;

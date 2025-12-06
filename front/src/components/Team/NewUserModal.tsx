@@ -27,8 +27,7 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
   async function handleAddUser(e: React.FormEvent) {
     e.preventDefault();
 
-    const newUser: User = await CreateCollaborator({
-      id: String(Date.now()),
+    const newUser = await CreateCollaborator({
       name,
       email,
       phoneNumber,
@@ -38,7 +37,7 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
       password,
     });
 
-    onAddUser(newUser);
+    onAddUser(newUser.newUser);
     toast.success("Colaborador criado com sucesso!");
     haandleOpenModalNew();
   }
@@ -107,9 +106,9 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                   <SelectValue placeholder="Selecione o departamento" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Desenvolvedor">Desenvolvedor</SelectItem>
-                  <SelectItem value="Mentor">Mentor</SelectItem>
-                  <SelectItem value="CEO">CEO</SelectItem>
+                  <SelectItem value="ADIMIN">Adimin</SelectItem>
+                  <SelectItem value="MANGER">Manager</SelectItem>
+                  <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
                   <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
@@ -124,6 +123,7 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                 <SelectContent>
                   <SelectItem value="ATIVO">ATIVO</SelectItem>
                   <SelectItem value="INATIVO">INATIVO</SelectItem>
+                  <SelectItem value="FERIAS">FERIAS</SelectItem>
                 </SelectContent>
               </Select>
             </div>

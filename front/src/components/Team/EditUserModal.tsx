@@ -8,13 +8,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { User } from "../../Pages/Team/Page";
+import { useState } from "react";
+
+import { toast } from "sonner";
+import { UpdateCollaborator } from "@/http/collaborator/updateCollaborator";
 
 type modalProps = {
   close: () => void;
   user: User | null;
+  onEditUser: (user: User) => void;
 };
 
-export function AlterarModal({ close, user }: modalProps) {
+export function AlterarModal({ close, user, onEditUser }: modalProps) {
+  const [name, setName] = useState(user?.name ?? "");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [wage, setWage] = useState(user?.wage ?? 0);
+  const [sector, setSector] = useState(user?.sector ?? "");
+  const [status, setStatus] = useState(user?.status ?? undefined);
+
+  async function handleEditUser(e: React.FormEvent) {
+    e.preventDefault();
+
+    const updatedUser = await UpdateCollaborator({
+      id: user!.id,
+      name,
+      email,
+      phoneNumber,
+      wage: Number(wage),
+      sector,
+      status: status as "ATIVO" | "INATIVO" | "FERIAS",
+    });
+
+    onEditUser(updatedUser.user);
+    toast.success("Colaborador editado com sucesso!");
+    close();
+  }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-3">
       <div className="relative w-full max-w-xl rounded-2xl bg-white p-10">
@@ -32,7 +61,8 @@ export function AlterarModal({ close, user }: modalProps) {
                 <label> Nome: </label>
                 <input
                   type="text"
-                  value={user?.name}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   required
                   className="w-full rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
                 />
@@ -42,7 +72,8 @@ export function AlterarModal({ close, user }: modalProps) {
                 <input
                   required
                   type="text"
-                  value={user?.phoneNumber}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   className="w-full rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
                 />
               </div>
@@ -52,7 +83,8 @@ export function AlterarModal({ close, user }: modalProps) {
               <input
                 required
                 type="email"
-                value={user?.email}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
               />
             </div>
@@ -60,7 +92,8 @@ export function AlterarModal({ close, user }: modalProps) {
               <label> Salario:</label>
               <input
                 required
-                value={user?.wage}
+                value={wage}
+                onChange={(e) => setWage(Number(e.target.value))}
                 type="number"
                 className="rounded-lg border border-gray-300 p-1 shadow-lg outline-none"
               />
@@ -68,17 +101,14 @@ export function AlterarModal({ close, user }: modalProps) {
 
             <div>
               <label> Cargo: </label>
-              <Select required>
-                <SelectTrigger
-                  value={user?.sector}
-                  className="border border-gray-300 p-5 shadow-lg"
-                >
+              <Select required value={sector} onValueChange={setSector}>
+                <SelectTrigger className="border border-gray-300 p-5 shadow-lg">
                   <SelectValue placeholder="Selecione o departamento" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Desenvolvedor">Desenvolvedor</SelectItem>
-                  <SelectItem value="Mentor">Mentor</SelectItem>
-                  <SelectItem value="CEO">CEO</SelectItem>
+                  <SelectItem value="ADIMIN">Adimin</SelectItem>
+                  <SelectItem value="MANGER">Manager</SelectItem>
+                  <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
                   <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
@@ -86,18 +116,20 @@ export function AlterarModal({ close, user }: modalProps) {
             </div>
             <div>
               <label> Status:</label>
-              <Select value={user?.status} required>
+              <Select value={status} onValueChange={setStatus} required>
                 <SelectTrigger className="w-full border border-gray-300 p-5 shadow-lg">
                   <SelectValue placeholder="Selecione o departamento" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ACTIVE">ATIVO</SelectItem>
-                  <SelectItem value="INACTIVE">INATIVO</SelectItem>
+                  <SelectItem value="ATIVO">ATIVO</SelectItem>
+                  <SelectItem value="INATIVO">INATIVO</SelectItem>
+                  <SelectItem value="FERIAS">FERIAS</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <button
               type="submit"
+              onClick={handleEditUser}
               className="flex cursor-pointer items-center justify-center gap-3 rounded-lg bg-[#A243D2] py-3 font-bold text-white"
             >
               <Save /> Salvar
