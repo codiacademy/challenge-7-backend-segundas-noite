@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { postauthenticate } from "../../http/postAuthenticate";
+import { postauthenticate } from "../../http/authenticate/postAuthenticate";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { LockKeyhole, Mail } from "lucide-react";
@@ -48,9 +48,7 @@ export function Login() {
           onSubmit={handleSubmit(handleLogin)}
           className="my-10 w-85 text-center text-amber-100"
         >
-          <h1 className="mb-6 text-2xl font-bold text-white">
-            32Faça seu login
-          </h1>
+          <h1 className="mb-6 text-2xl font-bold text-white">Faça seu login</h1>
 
           <div className="flex h-14 items-center gap-3 rounded-lg border border-zinc-900 bg-zinc-800 px-3 py-2">
             <Mail />
