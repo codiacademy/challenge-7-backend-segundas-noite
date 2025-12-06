@@ -1,4 +1,4 @@
-//Formulário de Gastos
+//Formulário de Gastos com TanStack Query
 import {
   DialogContent,
   DialogTrigger,
@@ -20,8 +20,8 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import type { IconBaseProps } from "react-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateExpenses } from "@/http/expenses/createExpenses";
-import { useState } from "react";
 
 interface Expensesprops {
   title?: string;
@@ -34,14 +34,11 @@ const formSchema = z.object({
   expenses: z.enum(["Fixa", "Variável"], {
     message: "O campo tipo despesa é obrigatório",
   }),
-
   description: z.string({
-    message: "O campo descrição da despesa é obrigatório",
+    message: "O campo descrição da despesa é obrigatório",
   }),
-
-  name: z.string({ message: "O campo nome da despesa é obrigatório" }),
-
-  value: z.coerce.number({ message: "O campo valor é obrigatório" }),
+  name: z.string({ message: "O campo nome da despesa é obrigatório" }),
+  value: z.coerce.number({ message: "O campo valor é obrigatório" }),
 });
 
 type formSchema = z.infer<typeof formSchema>;
@@ -52,6 +49,8 @@ export function ExpensesForm({
   trigger,
   icon: Icon,
 }: Expensesprops) {
+  const queryClient = useQueryClient();
+
   const {
     handleSubmit,
     control,
@@ -62,37 +61,37 @@ export function ExpensesForm({
     resolver: zodResolver(formSchema),
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  async function confirmExpense(data: formSchema) {
-    try {
-      setIsSubmitting(true);
-
-      const payload = {
-        id:
-          typeof crypto !== "undefined" && "randomUUID" in crypto
-            ? crypto.randomUUID()
-            : String(Date.now()),
-        name: data.name,
-        type: data.expenses,
-        description: data.description,
-        value: data.value,
-        date: new Date(),
-      };
-
-      console.log("payload de despesa:", payload);
-
+  // Mutação para criar despesa
+  const mutation = useMutation({
+    mutationFn: (payload: any) => CreateExpenses(payload),
+    onSuccess: () => {
       toast.success("Despesa cadastrada com sucesso!");
-
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       reset();
-
-      await CreateExpenses(payload);
-    } catch (error) {
-      console.log(error);
+    },
+    onError: () => {
       toast.error("Erro ao cadastrar despesa");
-    } finally {
-      setIsSubmitting(false);
-    }
+    },
+  });
+
+  // status correto para botão
+  const isLoading = mutation.isPending;
+
+  // Função de submit
+  function confirmExpense(data: formSchema) {
+    const payload = {
+      id:
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : String(Date.now()),
+      name: data.name,
+      type: data.expenses,
+      description: data.description,
+      value: data.value,
+      date: new Date(),
+    };
+
+    mutation.mutate(payload);
   }
 
   return (
@@ -109,7 +108,6 @@ export function ExpensesForm({
             <div className="flex items-center justify-center">
               {Icon && <Icon />}
             </div>
-
             {trigger}
           </button>
         </DialogTrigger>
@@ -143,7 +141,7 @@ export function ExpensesForm({
             <div>
               <span className="text-left">Nome da despesa:</span>
               <Input
-                placeholder="Digite o nome da despesa que deseja cadastrar"
+                placeholder="Digite o nome da despesa"
                 type="text"
                 {...register("name")}
                 required
@@ -158,7 +156,7 @@ export function ExpensesForm({
             <div>
               <span className="text-left">Descrição da despesa:</span>
               <Input
-                placeholder="Digite a descrição despesa que deseja cadastrar"
+                placeholder="Digite a descrição da despesa"
                 type="text"
                 {...register("description")}
                 required
@@ -187,14 +185,13 @@ export function ExpensesForm({
 
             <Button
               className="mt-4 cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600"
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
-         
     </div>
   );
 }
