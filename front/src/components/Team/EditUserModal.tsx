@@ -107,7 +107,7 @@ export function AlterarModal({ close, user, onEditUser }: modalProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ADIMIN">Adimin</SelectItem>
-                  <SelectItem value="MANGER">Manager</SelectItem>
+                  <SelectItem value="MANAGER">Manager</SelectItem>
                   <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
                   <SelectItem value="Receptionista">Receptionista</SelectItem>
