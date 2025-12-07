@@ -2,8 +2,8 @@ import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
 import { userSchemaBody } from '../../models/users-models.ts'
-
-router.put('/users/:id', async (req, res) => {
+import { authenticateSector } from '../middlewares/authenticateSector.ts'
+router.put('/users/:id', authenticateSector('ADIMIN'), async (req, res) => {
   try {
     const { id } = req.params
     const { name, phoneNumber, email, wage, sector, status } =

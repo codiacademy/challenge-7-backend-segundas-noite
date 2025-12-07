@@ -50,9 +50,12 @@ export function Team() {
       await DeleteUser({ id });
       setUserList((prev) => prev.filter((user) => user.id !== id));
       toast.success("Despesa deletada com sucesso!");
-    } catch (error) {
-      console.log(error);
-      toast.error("Erro ao deletar despesa");
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        toast.error("Voce nao tem permissao para deletar colaboradores");
+      } else {
+        toast.error("Erro ao deletar colaborador");
+      }
     }
   }
 
@@ -106,8 +109,8 @@ export function Team() {
     const search = searchTerm.toLowerCase();
 
     const matchesSearch =
-      user.name.toLowerCase().includes(search) ||
-      user.email.toLowerCase().includes(search);
+      user?.name?.toLowerCase().includes(search) ||
+      user?.email?.toLowerCase().includes(search);
 
     return matchesCargo && matchesSearch;
   });
@@ -117,7 +120,7 @@ export function Team() {
   }
   const totalMembros = filteredUsers.length;
   const membrosAtivos = filteredUsers.filter(
-    (user) => user.status === "Ativo",
+    (user) => user.status === "ATIVO",
   ).length;
   const departamentosUnicos = new Set(filteredUsers.map((user) => user.sector));
   const totalDepartamentos = departamentosUnicos.size;
@@ -192,7 +195,6 @@ export function Team() {
               email={user.email}
               phone={user.phoneNumber}
               status={user.status}
-              salario={user.wage}
               cargo={user.sector}
               openEdit={() => handleOpenModalEdit(user.id)}
               onDelete={() => handleDeleteUser(user.id)}
