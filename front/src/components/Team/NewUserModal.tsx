@@ -26,20 +26,27 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
 
   async function handleAddUser(e: React.FormEvent) {
     e.preventDefault();
+    try {
+      const newUser = await CreateCollaborator({
+        name,
+        email,
+        phoneNumber,
+        wage: Number(salario),
+        sector,
+        status,
+        password,
+      });
 
-    const newUser = await CreateCollaborator({
-      name,
-      email,
-      phoneNumber,
-      wage: Number(salario),
-      sector,
-      status,
-      password,
-    });
-
-    onAddUser(newUser.newUser);
-    toast.success("Colaborador criado com sucesso!");
-    haandleOpenModalNew();
+      onAddUser(newUser.newUser);
+      toast.success("Colaborador criado com sucesso!");
+      haandleOpenModalNew();
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        toast.error("Voce nao tem permissao para criar colaboradores");
+      } else {
+        toast.error("Erro ao criar colaborador");
+      }
+    }
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-3">

@@ -11,7 +11,7 @@ type cardProps = {
   departament: string;
   phone: string;
   status: string;
-  salario: number;
+  salario?: number;
   cargo: string;
   openEdit: () => void;
   onDelete: (id: string) => void;
@@ -77,14 +77,6 @@ export function UserCard({
             Departamento:
           </span>
           <span className="text-[14px] text-gray-600">{departament}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[15px] font-semibold text-gray-900">
-            Salário:
-          </span>
-          <span className="text-[14px] font-bold text-[#A243D2]">
-            R$ {salario}
-          </span>
         </div>
       </div>
 

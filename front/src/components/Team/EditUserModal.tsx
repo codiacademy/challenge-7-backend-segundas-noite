@@ -29,20 +29,27 @@ export function AlterarModal({ close, user, onEditUser }: modalProps) {
 
   async function handleEditUser(e: React.FormEvent) {
     e.preventDefault();
+    try {
+      const updatedUser = await UpdateCollaborator({
+        id: user!.id,
+        name,
+        email,
+        phoneNumber,
+        wage: Number(wage),
+        sector,
+        status: status as "ATIVO" | "INATIVO" | "FERIAS",
+      });
 
-    const updatedUser = await UpdateCollaborator({
-      id: user!.id,
-      name,
-      email,
-      phoneNumber,
-      wage: Number(wage),
-      sector,
-      status: status as "ATIVO" | "INATIVO" | "FERIAS",
-    });
-
-    onEditUser(updatedUser.user);
-    toast.success("Colaborador editado com sucesso!");
-    close();
+      onEditUser(updatedUser.user);
+      toast.success("Colaborador editado com sucesso!");
+      close();
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        toast.error("Voce nao tem permissao para editar colaboradores");
+      } else {
+        toast.error("Erro ao editar colaborador");
+      }
+    }
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-3">
