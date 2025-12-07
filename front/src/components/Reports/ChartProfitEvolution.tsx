@@ -8,22 +8,20 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { useBalance } from "@/mathcards/balance";
 export const description = "A linear line chart";
-const chartData = [
-  { month: "January", lucro: 186 },
-  { month: "February", lucro: 305 },
-  { month: "March", lucro: 237 },
-  { month: "April", lucro: 73 },
-  { month: "May", lucro: 209 },
-  { month: "June", lucro: 214 },
-];
-const chartConfig = {
-  lucro: {
-    label: "Lucro",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig;
+
 export function ChartProfitEvolution() {
+  const { balanco } = useBalance();
+
+  const chartData = [{ lucro: balanco }];
+  const chartConfig = {
+    lucro: {
+      label: "Lucro",
+      color: "var(--chart-1)",
+    },
+  } satisfies ChartConfig;
+
   return (
     <Card>
       <CardHeader>

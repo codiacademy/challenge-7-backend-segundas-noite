@@ -21,11 +21,13 @@ import { ChartRevenueByCourseType } from "@/components/Reports/ChartRevenueByCou
 import { ChartTrendAnalysis } from "@/components/Reports/ChartTrendAnalysis";
 import { useExpenses } from "@/mathcards/expensesCards";
 import { useSales } from "@/mathcards/salesCard";
+import { useBalance } from "@/mathcards/balance";
 
 export function Reports() {
   /* funções dos cards */
   const { totais } = useExpenses();
   const { totalVendas } = useSales();
+  const { balanco } = useBalance();
 
   return (
     <div className="flex h-screen">
@@ -80,7 +82,7 @@ export function Reports() {
 
           <CardsReports
             title={"Balanço"}
-            value={10000}
+            value={balanco}
             color={"blue"}
             icon={TrendingUpDown}
             bgColor={"blue"}

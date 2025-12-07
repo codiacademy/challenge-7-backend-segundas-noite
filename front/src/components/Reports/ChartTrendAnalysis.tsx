@@ -8,30 +8,37 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { useBalance } from "@/mathcards/balance";
+import { useSales } from "@/mathcards/salesCard";
+import { useExpenses } from "@/mathcards/expensesCards";
 export const description = "A line chart with custom dots";
-const chartData = [
-  { month: "January", receitas: 186, despesas: 80, lucro: 106 },
-  { month: "February", receitas: 305, despesas: 200, lucro: 105 },
-  { month: "March", receitas: 237, despesas: 120, lucro: 117 },
-  { month: "April", receitas: 73, despesas: 190, lucro: -117 },
-  { month: "May", receitas: 209, despesas: 130, lucro: 179 },
-  { month: "June", receitas: 214, despesas: 140, lucro: 174 },
-];
-const chartConfig = {
-  receitas: {
-    label: "Receitas",
-    color: "var(--chart-1)",
-  },
-  despesas: {
-    label: "Despesas",
-    color: "var(--chart-2)",
-  },
-  lucro: {
-    label: "Lucro",
-    color: "var(--chart-3)",
-  },
-} satisfies ChartConfig;
+
 export function ChartTrendAnalysis() {
+  const { totais } = useExpenses();
+  const { totalVendas } = useSales();
+  const { balanco } = useBalance();
+
+  const chartData = [
+    {
+      receitas: totalVendas,
+      despesas: totais.totalGastos,
+      lucro: balanco,
+    },
+  ];
+  const chartConfig = {
+    receitas: {
+      label: "Receitas",
+      color: "var(--chart-1)",
+    },
+    despesas: {
+      label: "Despesas",
+      color: "var(--chart-2)",
+    },
+    lucro: {
+      label: "Lucro",
+      color: "var(--chart-3)",
+    },
+  } satisfies ChartConfig;
   return (
     <Card>
       <CardHeader>

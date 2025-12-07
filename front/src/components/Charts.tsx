@@ -14,105 +14,29 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { parseISO, format, getISOWeek } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useExpenses } from "@/mathcards/expensesCards";
+import { useSales } from "@/mathcards/salesCard";
+import { useNetBalance } from "@/mathcards/saldoCard";
 
-type Sale = {
-  id: string;
-  nome: string;
-  curso: string;
-  valor: number;
-  data: string;
-};
-type Expense = {
-  id: string;
-  descricao: string;
-  valor: number;
-  data: string;
-  tipo: string;
-  formaPagamento: string;
-};
 type Props = {
   filter: "semana" | "mes" | "ano";
   tipo: "barChart" | "lineChart";
 };
 
-export function Charts({ filter, tipo }: Props) {
-  // Buscar os dados da API
-  const [dados, setDados] = useState<
-    { periodo: string; totalVendas: number; totalDespesas: number }[]
-  >([]);
+export function Charts({ /* filter, */ tipo }: Props) {
+  const { totais } = useExpenses();
+  const { totalVendas } = useSales();
+  const { saldoLiquido } = useNetBalance();
 
-  useEffect(() => {
-    Promise.all([
-      axios.get<Sale[]>("http://localhost:3000/Vendas"),
-      axios.get<Expense[]>("http://localhost:3000/despesas"),
-    ])
-      .then(([resVendas, resDespesas]) => {
-        const vendas: Sale[] = resVendas.data;
-        const despesas: Expense[] = resDespesas.data;
-        // Agrupar por mês (formato MM/yyyy)
-        const agrupado = (items: { data: string; valor: number }[]) => {
-          return items.reduce((acc: Record<string, number>, item) => {
-            const data = parseISO(item.data);
-
-            let chave = "";
-            if (filter === "mes") {
-              chave = format(data, "MM/yyyy");
-            } else if (filter === "semana") {
-              const semana = getISOWeek(data);
-              chave = `Semana ${semana} - ${format(data, "MM/yyyy")}`;
-            } else if (filter === "ano") {
-              chave = format(data, "yyyy");
-            }
-
-            acc[chave] = (acc[chave] || 0) + item.valor;
-            return acc;
-          }, {});
-        };
-        const vendasAgrupadas = agrupado(vendas);
-        const despesasAgrupadas = agrupado(despesas);
-        const todosPeriodos = new Set([
-          ...Object.keys(vendasAgrupadas),
-          ...Object.keys(despesasAgrupadas),
-        ]);
-
-        const dadosFormatados = Array.from(todosPeriodos).map((periodo) => {
-          let dataSort: Date;
-
-          if (filter === "ano") {
-            dataSort = parseISO(`01/01/${periodo}`);
-          } else if (filter === "mes") {
-            // periodo = "MM/yyyy"
-            dataSort = parseISO(`01/${periodo}`);
-          } else {
-            // periodo = "Semana 3 - 01/2024"
-            const partes = periodo.split(" - ")[1]; // "01/2024"
-            dataSort = parseISO(`01/${partes}`);
-          }
-
-          return {
-            periodo,
-            totalVendas: vendasAgrupadas[periodo] || 0,
-            totalDespesas: despesasAgrupadas[periodo] || 0,
-            balanco:
-              (vendasAgrupadas[periodo] || 0) -
-              (despesasAgrupadas[periodo] || 0),
-            dataSort,
-          };
-        });
-
-        // Ordenar por data real (de forma crescente)
-        dadosFormatados.sort(
-          (a, b) => a.dataSort.getTime() - b.dataSort.getTime(),
-        );
-
-        setDados(dadosFormatados);
-      })
-      .catch((error) => console.error("Erro ao buscar dados:", error));
-  }, [filter]);
+  const chartdata = [
+    {
+      name: "",
+      vendas: totalVendas,
+      despesas: totais.totalGastos,
+      saldoliquido: saldoLiquido,
+    },
+  ];
 
   function ChartLegendContent() {
     return (
@@ -145,14 +69,14 @@ export function Charts({ filter, tipo }: Props) {
               {/* Passo 4: Exibir os dados usando BarChart */}
 
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dados}>
+                <BarChart data={chartdata}>
                   <CartesianGrid vertical={false} />
                   <XAxis dataKey="periodo" />
 
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Bar dataKey="totalVendas" fill="#10B981" name="Vendas" />
-                  <Bar dataKey="totalDespesas" fill="#F87171" name="Despesas" />
-                  <Bar dataKey="balanco" fill="#6366F1" name="Balanco" />
+                  <Bar dataKey="vendas" fill="#10B981" name="Vendas" />
+                  <Bar dataKey="despesas" fill="#F87171" name="Despesas" />
+                  <Bar dataKey="saldoliquido" fill="#6366F1" name="Balanco" />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -167,7 +91,7 @@ export function Charts({ filter, tipo }: Props) {
           <CardContent>
             <ChartContainer config={{}}>
               <LineChart
-                data={dados}
+                data={chartdata}
                 margin={{
                   top: 20,
                   left: 12,
@@ -182,7 +106,7 @@ export function Charts({ filter, tipo }: Props) {
                 />
 
                 <Line
-                  dataKey="totalVendas"
+                  dataKey="vendas"
                   type="natural"
                   stroke="#10B981"
                   strokeWidth={2}

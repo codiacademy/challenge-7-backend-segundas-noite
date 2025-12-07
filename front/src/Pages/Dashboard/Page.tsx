@@ -8,20 +8,8 @@ import {
   TrendingUpDown,
 } from "lucide-react";
 import { Button } from "@/components/Dashboard/Button";
-
 import { RangeCalendar } from "@/components/Dashboard/RangeCalendar";
-
 import { useEffect, useState } from "react";
-
-import {
-  getTotalSales,
-  type totalSalesResponse,
-} from "@/http/dashboard/getTotalSales";
-
-import {
-  getTotalExpenses,
-  type totalExpensesResponse,
-} from "@/http/dashboard/getTotalExpenses";
 import { FiltroPorPeriodo } from "@/components/Dashboard/FiltroPorPeriodo";
 import { ToggleButton } from "../../components/Dashboard/ToggleButton";
 import { useNavigate } from "react-router-dom";
@@ -40,27 +28,6 @@ export function Dashboard() {
     }
   }, [navigate]);
   const [selectedFilter, setselectedFilter] = useState<Filter>("mes");
-
-  //Funções para obter o total de vendas
-  const [totalSales, setTotalSales] = useState<totalSalesResponse[]>([]);
-
-  async function getTotalSale() {
-    try {
-      const result = await getTotalSales();
-      setTotalSales(result);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const totalSale = totalSales.reduce((acc, sales) => {
-    return acc + sales.valor;
-  }, 0);
-
-  useEffect(() => {
-    getTotalSale();
-  }, []);
-
-  //Funções para obter o total de despesas
 
   const { totais } = useExpenses();
   const { totalVendas } = useSales();
