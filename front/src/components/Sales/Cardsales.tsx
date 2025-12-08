@@ -53,7 +53,6 @@ export function CardSales({
 
       toast.success("Venda deletada com sucesso!");
 
-      // 😈💗 invalida e atualiza a TABELA
       queryClient.invalidateQueries({
         queryKey: ["sales"],
       });
