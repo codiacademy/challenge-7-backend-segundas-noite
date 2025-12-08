@@ -1,8 +1,9 @@
+import type { ExpenseName } from "@/hooks/typeExpense";
 import { api } from "@/lib/axios";
 
 interface createExpensesProps {
   id: string;
-  name: string;
+  name: ExpenseName;
   description: string;
   value: number;
   type: "Fixa" | "Variável";

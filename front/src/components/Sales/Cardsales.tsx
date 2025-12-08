@@ -4,19 +4,19 @@ import { UpdateSalesForm } from "@/components/Sales/UpdateSalesForm";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DeleteSales } from "@/http/sales/deleteSales";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CardSalesProps {
   id: string;
   name: string;
   email: string;
   phone: string;
-  type: string;
+  type?: "Online" | "Presencial";
   data: string;
   grossvalue: number;
   discount: number;
   deduction: number;
   finalvalue: number;
-  onSuccess: () => void;
 }
 
 export function CardSales({
@@ -30,9 +30,9 @@ export function CardSales({
   discount,
   deduction,
   finalvalue,
-  onSuccess,
 }: CardSalesProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const queryClient = useQueryClient();
 
   function formatBRL(value: number) {
     return new Intl.NumberFormat("pt-BR", {
@@ -50,7 +50,13 @@ export function CardSales({
     try {
       setIsDeleting(true);
       await DeleteSales({ id });
+
       toast.success("Venda deletada com sucesso!");
+
+      // 😈💗 invalida e atualiza a TABELA
+      queryClient.invalidateQueries({
+        queryKey: ["sales"],
+      });
     } catch (error) {
       console.log(error);
       toast.error("Erro ao deletar venda");
@@ -119,7 +125,7 @@ export function CardSales({
           </div>
         </div>
 
-        {/* Actions: Edit & Delete */}
+        {/* Actions */}
         <div className="flex gap-1">
           <UpdateSalesForm
             title="Edite sua venda"
@@ -138,7 +144,6 @@ export function CardSales({
               cardTax: 0,
               valorLiquido: finalvalue,
             }}
-            onSuccess={onSuccess} // agora TypeScript aceita
           />
 
           <button

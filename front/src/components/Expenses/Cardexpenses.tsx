@@ -12,7 +12,7 @@ interface CardExpensesProps {
   data: string;
   fixed?: "Fixa" | "Variável";
   value: number;
-  onSuccess?: () => void; // Função para recarregar lista após update/deleção
+  onSuccess?: () => void;
 }
 
 export function CardExpenses({
@@ -25,6 +25,7 @@ export function CardExpenses({
   onSuccess,
 }: CardExpensesProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRemoved, setIsRemoved] = useState(false);
 
   const valorFormatado = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -41,37 +42,41 @@ export function CardExpenses({
       setIsDeleting(true);
       await DeleteExpenses({ id });
       toast.success("Despesa deletada com sucesso!");
-      onSuccess?.();
+
+      setIsRemoved(true); // 😈 o card desaparece
+      onSuccess?.(); // se o pai quiser reagir, reage
     } catch (error) {
-      console.error(error);
       toast.error("Erro ao deletar despesa");
     } finally {
       setIsDeleting(false);
     }
   }
 
+  // 💀 sumiu da tela
+  if (isRemoved) return null;
+
   return (
     <Card className="bg-white p-2 transition duration-[0.5s] hover:bg-gray-100">
-      {/* Header */}
       <header className="flex flex-col justify-between gap-2 lg:flex-row">
         <div className="flex flex-col gap-2 md:flex-row md:items-center lg:gap-5">
           <h1 className="w-fit text-[18px] font-medium">{title}</h1>
+
           <div
-            className={`flex w-fit items-center rounded-2xl px-2 ${fixed === "Fixa" ? "w-11 bg-red-500" : "w-[70px] bg-gray-200"}`}
+            className={`flex w-fit items-center rounded-2xl px-2 ${
+              fixed === "Fixa" ? "w-11 bg-red-500" : "w-[70px] bg-gray-200"
+            }`}
           >
-            <span
-              className={`${fixed === "Fixa" ? "text-white" : "text-black"}`}
-            >
+            <span className={fixed === "Fixa" ? "text-white" : "text-black"}>
               {fixed}
             </span>
           </div>
         </div>
+
         <span className="text-2xl font-bold text-red-600">
           {valorFormatado}
         </span>
       </header>
 
-      {/* Conteúdo e ações */}
       <div className="mr-4 flex justify-between">
         <div className="text-gray-500">
           <p>{description}</p>

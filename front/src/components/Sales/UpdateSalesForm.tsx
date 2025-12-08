@@ -50,7 +50,8 @@ const formSchema = z.object({
   modality: z.enum(["Online", "Presencial"], {
     message: "O campo modalidade é obrigatório",
   }),
-  courseId: z.string({ message: "Selecione um curso" }),
+  courseId: z.string().uuid({ message: "Selecione um curso" }),
+
   name: z
     .string()
     .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
@@ -129,7 +130,7 @@ export function UpdateSalesForm({
           initialData?.type === "Online" || initialData?.type === "Presencial"
             ? initialData.type
             : undefined,
-        courseId: initialData.courseId ?? "",
+        courseId: initialData.courseId ?? undefined,
         name: initialData.name ?? "",
         email: initialData.email ?? "",
         phone: initialData.phone ?? "",
