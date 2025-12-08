@@ -1,4 +1,4 @@
-//Formulário de Gastos
+//Formulário de Gastos com TanStack Query
 import {
   DialogContent,
   DialogTrigger,
@@ -13,16 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
 import { Input } from "../ui/input";
 import { Button } from "@/components/ui/button";
-
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { toast } from "sonner";
 import type { IconBaseProps } from "react-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateExpenses } from "@/http/expenses/createExpenses";
 
 interface Expensesprops {
   title?: string;
@@ -32,21 +31,26 @@ interface Expensesprops {
 }
 
 const formSchema = z.object({
-  expenses: z.enum(["fixedExpense", "variableExpense"], {
+  expenses: z.enum(["Fixa", "Variável"], {
     message: "O campo tipo despesa é obrigatório",
   }),
-
-  date: z.string({ message: "O campo data é obrigatório" }),
-
-  name: z
-    .string({ message: "O campo nome é obrigatório" })
-    .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
-
   description: z.string({
-    message: "O campo descrição da despesa é obrigatório",
+    message: "O campo descrição da despesa é obrigatório",
   }),
-
-  value: z.coerce.number({ message: "O campo valor é obrigatório" }),
+  name: z.enum(
+    [
+      "Aluguel",
+      "Energia",
+      "Manutenção",
+      "Marketing",
+      "Suprimentos",
+      "Internet",
+      "Pagamento",
+      "Outros",
+    ],
+    { message: "O campo nome da despesa é obrigatório" },
+  ),
+  value: z.coerce.number({ message: "O campo valor é obrigatório" }),
 });
 
 type formSchema = z.infer<typeof formSchema>;
@@ -57,6 +61,8 @@ export function ExpensesForm({
   trigger,
   icon: Icon,
 }: Expensesprops) {
+  const queryClient = useQueryClient();
+
   const {
     handleSubmit,
     control,
@@ -67,19 +73,37 @@ export function ExpensesForm({
     resolver: zodResolver(formSchema),
   });
 
-  async function confirmExpense(data: formSchema) {
-    try {
-      console.log(data);
-
+  // Mutação para criar despesa
+  const mutation = useMutation({
+    mutationFn: (payload: any) => CreateExpenses(payload),
+    onSuccess: () => {
       toast.success("Despesa cadastrada com sucesso!");
-
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       reset();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        toast.error("Erro ao cadastrar despesa");
-      }
-    }
+    },
+    onError: () => {
+      toast.error("Erro ao cadastrar despesa");
+    },
+  });
+
+  // status correto para botão
+  const isLoading = mutation.isPending;
+
+  // Função de submit
+  function confirmExpense(data: formSchema) {
+    const payload = {
+      id:
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : String(Date.now()),
+      name: data.name,
+      type: data.expenses,
+      description: data.description,
+      value: data.value,
+      date: new Date(),
+    };
+
+    mutation.mutate(payload);
   }
 
   return (
@@ -96,7 +120,6 @@ export function ExpensesForm({
             <div className="flex items-center justify-center">
               {Icon && <Icon />}
             </div>
-
             {trigger}
           </button>
         </DialogTrigger>
@@ -105,20 +128,6 @@ export function ExpensesForm({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
           <form onSubmit={handleSubmit(confirmExpense)}>
-            <div>
-              <span className="text-left">Nome da despesa:</span>
-              <Input
-                placeholder="Nome da despesa"
-                type="text"
-                {...register("name")}
-                required
-              />
-              {errors?.name && (
-                <span className="mb-4 text-left text-sm text-red-500">
-                  {errors.name.message}
-                </span>
-              )}
-            </div>
             <span>Tipo de despesa</span>
             <Controller
               name="expenses"
@@ -129,10 +138,8 @@ export function ExpensesForm({
                     <SelectValue placeholder="Selecione um item para cadastrar despesa" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="fixedExpense">Despesa Fixa</SelectItem>
-                    <SelectItem value="variableExpense">
-                      Despesa variável
-                    </SelectItem>
+                    <SelectItem value="Fixa">Despesa Fixa</SelectItem>
+                    <SelectItem value="Variável">Despesa Variável</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -144,9 +151,34 @@ export function ExpensesForm({
             )}
 
             <div>
+              <span className="text-left">Nome da despesa:</span>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione um item para cadastrar despesa" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Aluguel">Aluguel</SelectItem>
+                      <SelectItem value="Energia">Energia</SelectItem>
+                      <SelectItem value="Manutenção">Manutenção</SelectItem>
+                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      <SelectItem value="Suprimentos">Suprimentos</SelectItem>
+                      <SelectItem value="Internet">Internet</SelectItem>
+                      <SelectItem value="Pagamento">Pagamento</SelectItem>
+                      <SelectItem value="Outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            <div>
               <span className="text-left">Descrição da despesa:</span>
               <Input
-                placeholder="Digite a descrição despesa que deseja cadastrar"
+                placeholder="Digite a descrição da despesa"
                 type="text"
                 {...register("description")}
                 required
@@ -154,20 +186,6 @@ export function ExpensesForm({
               {errors?.description && (
                 <span className="mb-4 text-left text-sm text-red-500">
                   {errors.description.message}
-                </span>
-              )}
-            </div>
-            <div>
-              <span className="text-left">Data</span>
-              <Input
-                placeholder="Data da despesa"
-                type="text"
-                {...register("date")}
-                required
-              />
-              {errors?.date && (
-                <span className="mb-4 text-left text-sm text-red-500">
-                  {errors.date.message}
                 </span>
               )}
             </div>
@@ -187,13 +205,15 @@ export function ExpensesForm({
               )}
             </div>
 
-            <Button className="mt-4 cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600">
-              Salvar
+            <Button
+              className="mt-4 cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600"
+              disabled={isLoading}
+            >
+              {isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
-         
     </div>
   );
 }

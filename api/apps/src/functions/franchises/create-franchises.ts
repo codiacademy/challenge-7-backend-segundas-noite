@@ -1,11 +1,11 @@
-import express from 'express'
-import { prisma } from '../../lib/prisma.js'
-export const router = express.Router()
+import express from "express";
+import { prisma } from "../../lib/prisma.js";
+export const router = express.Router();
 
-router.post('/franchises', async (req, res) => {
+router.post("/franchises", async (req, res) => {
   try {
     const { name, city, state, responsible, phoneNumber, email, status } =
-      req.body
+      req.body;
 
     await prisma.franchises.create({
       data: {
@@ -17,9 +17,9 @@ router.post('/franchises', async (req, res) => {
         email,
         status,
       },
-    })
-    return res.status(201).json({ message: 'Franchise created successfully' })
+    });
+    return res.status(201).json({ message: "Franchise created successfully" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});

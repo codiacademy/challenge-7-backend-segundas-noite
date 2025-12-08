@@ -30,7 +30,7 @@ export function Aside() {
       icon: <ShoppingCart size={22} />,
       label: "Vendas",
       path: "/vendas",
-      count: "12",
+      count: "0",
     },
     {
       icon: <CreditCard size={22} />,
@@ -54,9 +54,9 @@ export function Aside() {
       icon: <Store size={22} />,
       label: "CodiStore",
       path: "/codistore",
-      count: "2",
+      count: "0",
     },
-    { icon: <Users size={22} />, label: "Equipe", path: "/users", count: "1" },
+    { icon: <Users size={22} />, label: "Equipe", path: "/users", count: "0" },
     {
       icon: <Settings size={22} />,
       label: "Configurações",

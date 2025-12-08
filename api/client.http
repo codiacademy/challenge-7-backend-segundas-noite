@@ -4,12 +4,13 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
- "name": "Jander",
- "phoneNumber": "32945454436",
- "email": "jander@gmail.com",
+ "name": "Bruno",
+ "phoneNumber": "32945454461",
+ "email": "bruno@gmail.com",
  "wage": 5500, 
- "sector": "Tecnologia" ,
- "status": "ATIVO"
+ "sector": "adimin" ,
+ "status": "ATIVO",
+ "password": "123456"
  
 }
 
@@ -30,7 +31,8 @@ Content-Type: application/json
  "email": "vanessa@gmail.com",
  "wage": 5000, 
  "sector": "Tecnologia" ,
- "status": "ATIVO"
+ "status": "ATIVO",
+ password:"123456"
  
 }
 
@@ -235,6 +237,14 @@ GET http://localhost:3000/sales-month/2025-11-10T00:00:00.000Z
 ###
 GET http://localhost:3000/sales-year/2025
 
+###
+POST http://localhost:3000/autenticate
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
 
 
 

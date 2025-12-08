@@ -1,19 +1,24 @@
 import { Calendar, Mail, Phone, SquarePen, Trash2 } from "lucide-react";
 import Logo from "@/assests/CodiLogoAside.png";
 
+import { useState } from "react";
+
 type cardProps = {
+  id: string;
   name: string;
   key: string;
   email: string;
   departament: string;
   phone: string;
   status: string;
-  salario: number;
+  salario?: number;
   cargo: string;
   openEdit: () => void;
+  onDelete: (id: string) => void;
 };
 
 export function UserCard({
+  id,
   name,
   email,
   departament,
@@ -22,7 +27,10 @@ export function UserCard({
   cargo,
   salario,
   openEdit,
+  onDelete,
 }: cardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <div className="flex flex-col gap-3 rounded-lg border bg-white p-3 transition-shadow duration-500 ease-in-out hover:shadow-2xl md:w-full lg:w-[415px]">
       {/* Header */}
@@ -70,14 +78,6 @@ export function UserCard({
           </span>
           <span className="text-[14px] text-gray-600">{departament}</span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[15px] font-semibold text-gray-900">
-            Salário:
-          </span>
-          <span className="text-[14px] font-bold text-[#A243D2]">
-            R$ {salario}
-          </span>
-        </div>
       </div>
 
       {/* Button area */}
@@ -89,7 +89,11 @@ export function UserCard({
           <SquarePen />
           Editar
         </button>
-        <button className="flex cursor-pointer items-center justify-center rounded-lg border p-2 font-bold text-red-500 hover:bg-gray-100">
+        <button
+          onClick={() => onDelete(id)}
+          disabled={isDeleting}
+          className="flex cursor-pointer items-center justify-center rounded-lg border p-2 font-bold text-red-500 hover:bg-gray-100"
+        >
           <Trash2 />
         </button>
       </div>

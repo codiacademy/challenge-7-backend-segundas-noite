@@ -8,20 +8,14 @@ import {
   TrendingUpDown,
 } from "lucide-react";
 import { Button } from "@/components/Dashboard/Button";
-
 import { RangeCalendar } from "@/components/Dashboard/RangeCalendar";
-
 import { useEffect, useState } from "react";
-
-import { getTotalSales, type totalSalesResponse } from "@/http/getTotalSales";
-
-import {
-  getTotalExpenses,
-  type totalExpensesResponse,
-} from "@/http/getTotalExpenses";
 import { FiltroPorPeriodo } from "@/components/Dashboard/FiltroPorPeriodo";
 import { ToggleButton } from "../../components/Dashboard/ToggleButton";
 import { useNavigate } from "react-router-dom";
+import { useExpenses } from "@/mathcards/expensesCards";
+import { useSales } from "@/mathcards/salesCard";
+import { useNetBalance } from "@/mathcards/saldoCard";
 
 type Filter = "semana" | "mes" | "ano";
 export function Dashboard() {
@@ -35,49 +29,9 @@ export function Dashboard() {
   }, [navigate]);
   const [selectedFilter, setselectedFilter] = useState<Filter>("mes");
 
-  //Funções para obter o total de vendas
-  const [totalSales, setTotalSales] = useState<totalSalesResponse[]>([]);
-
-  async function getTotalSale() {
-    try {
-      const result = await getTotalSales();
-      setTotalSales(result);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const totalSale = totalSales.reduce((acc, sales) => {
-    return acc + sales.valor;
-  }, 0);
-
-  useEffect(() => {
-    getTotalSale();
-  }, []);
-
-  //Funções para obter o total de despesas
-
-  const [totalExpenses, setTotalExpenses] = useState<totalExpensesResponse[]>(
-    [],
-  );
-  async function getTotalExpense() {
-    try {
-      const result = await getTotalExpenses();
-      setTotalExpenses(result);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const totalExpense = totalExpenses.reduce((acc, expenses) => {
-    return acc + expenses.valor;
-  }, 0);
-
-  useEffect(() => {
-    getTotalExpense();
-  }, []);
-
-  // Calculo saldo liquido
-
-  const saldoLiquido = totalSale - totalExpense;
+  const { totais } = useExpenses();
+  const { totalVendas } = useSales();
+  const { saldoLiquido } = useNetBalance();
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -105,14 +59,14 @@ export function Dashboard() {
             iconMain={TrendingUp}
             iconSecundary={ChartNoAxesCombined}
             name="  Total de Vendas"
-            value={totalSale}
+            value={totalVendas}
             color="green"
           />
           <InfoCard
             iconMain={TrendingDown}
             iconSecundary={BanknoteArrowDown}
             name="  Total de Despesas"
-            value={totalExpense}
+            value={totais.totalGastos}
             color="red"
           />
           <InfoCard

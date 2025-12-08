@@ -1,4 +1,3 @@
-//Formulário de vendas
 import {
   DialogContent,
   DialogTrigger,
@@ -13,50 +12,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { toast } from "sonner";
 import type { IconBaseProps } from "react-icons";
+import { useEffect, useState } from "react";
+import { Createsales } from "@/http/sales/createSales";
+import { AllCourses } from "@/http/courses/allCourses";
 
 interface Salesprops {
   title?: string;
   description?: string;
   trigger?: string;
   icon?: React.ComponentType<IconBaseProps>;
+  onSuccess: () => void;
 }
 
 const formSchema = z.object({
-  typeCourse: z.enum(["online", "presencial"], {
+  modality: z.enum(["Online", "Presencial"], {
     message: "O campo modalidade de curso é obrigatório",
   }),
-
+  courseId: z.string({ message: "Selecione um curso" }),
   name: z
-    .string({ message: "O campo nome é obrigatório" })
+    .string()
     .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
-
-  email: z
-    .string({ message: "O campo email é obrigatório" })
-    .email({ message: "Digite um email válido" }),
-
+  email: z.string().email({ message: "Digite um email válido" }),
   phone: z
-    .string({ message: "O campo telefone é obrigatório" })
-    .min(11, { message: "O número deve conter no mínimo 11 dígitos" }),
-
-  grossValue: z.coerce.number({ message: "O campo valor bruto é obrigatório" }),
-
-  discount: z.coerce.number({ message: "O campo desconto é obrigatório" }),
-
-  commission: z.coerce.number({ message: "O campo comissão é obrigatório" }),
-
-  tax: z.coerce.number({ message: "O campo imposto é obrigatório" }),
-
-  cardTax: z.coerce.number({ message: "O campo taxa cartão é obrigatório" }),
+    .string()
+    .min(11, { message: "O número deve conter no mínimo 11 dígitos" }),
+  grossValue: z.coerce.number({ message: "O valor bruto é obrigatório" }),
+  discount: z.coerce.number({ message: "O desconto é obrigatório" }),
+  commission: z.coerce.number({ message: "A comissão é obrigatória" }),
+  tax: z.coerce.number({ message: "O imposto é obrigatório" }),
+  cardTax: z.coerce.number({ message: "A taxa do cartão é obrigatória" }),
 });
 
 type formSchema = z.infer<typeof formSchema>;
@@ -66,29 +57,68 @@ export function SalesForm({
   description,
   trigger,
   icon: Icon,
+  onSuccess,
 }: Salesprops) {
   const {
     handleSubmit,
     control,
     register,
-    formState: { errors },
     reset,
+    formState: { errors },
   } = useForm<formSchema>({
     resolver: zodResolver(formSchema),
   });
 
+  interface Course {
+    id: string;
+    name: string;
+  }
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const data = await AllCourses();
+        setCourses(data);
+      } catch (error) {
+        console.log("Erro ao carregar cursos:", error);
+      }
+    }
+    loadCourses();
+  }, []);
+
   async function confirmSale(data: formSchema) {
     try {
-      console.log(data);
+      setIsSubmitting(true);
 
+      const payload = {
+        id:
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : String(Date.now()),
+        Modalidade: data.modality,
+        courseId: data.courseId,
+        nomeAluno: data.name,
+        email: data.email,
+        telefone: data.phone,
+        valorBruto: data.grossValue,
+        desconto: data.discount,
+        comisao: data.commission,
+        imposto: data.tax,
+        taxaCartao: data.cardTax,
+        // ⚡ Não enviamos valorLiquido nem dataVenda, o backend calcula
+      };
+
+      await Createsales(payload);
       toast.success("Venda cadastrada com sucesso!");
-
       reset();
+      onSuccess();
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        toast.error("Erro ao cadastrar venda");
-      }
+      console.log(error);
+      toast.error("Erro ao cadastrar venda");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -106,7 +136,6 @@ export function SalesForm({
             <div className="flex items-center justify-center">
               {Icon && <Icon />}
             </div>
-
             {trigger}
           </button>
         </DialogTrigger>
@@ -114,27 +143,52 @@ export function SalesForm({
         <DialogContent className="p-3">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
+
           <form onSubmit={handleSubmit(confirmSale)}>
             <label>Modalidade do curso</label>
-
             <Controller
-              name="typeCourse"
+              name="modality"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione uma modalidade" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="online">Online</SelectItem>
-                    <SelectItem value="presencial">Presencial</SelectItem>
+                    <SelectItem value="Online">Online</SelectItem>
+                    <SelectItem value="Presencial">Presencial</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
-            {errors?.typeCourse && (
+            {errors?.modality && (
               <span className="text-left text-sm text-red-500">
-                {errors.typeCourse.message}
+                {errors.modality.message}
+              </span>
+            )}
+
+            <label>Curso</label>
+            <Controller
+              name="courseId"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione o curso" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {courses.map((curso) => (
+                      <SelectItem key={curso.id} value={curso.id}>
+                        {curso.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors?.courseId && (
+              <span className="text-left text-sm text-red-500">
+                {errors.courseId.message}
               </span>
             )}
 
@@ -154,7 +208,7 @@ export function SalesForm({
             </div>
 
             <div>
-              <label htmlFor="">E-mail</label>
+              <label>E-mail</label>
               <Input
                 placeholder="E-mail"
                 type="email"
@@ -169,7 +223,7 @@ export function SalesForm({
             </div>
 
             <div>
-              <label htmlFor="">Telefone</label>
+              <label>Telefone</label>
               <Input
                 placeholder="Telefone"
                 type="tel"
@@ -186,7 +240,7 @@ export function SalesForm({
             <h1 className="m-4 font-medium">Dados da venda:</h1>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label htmlFor="">Valor Bruto</label>
+                <label>Valor Bruto</label>
                 <Input
                   placeholder="Valor Bruto"
                   type="number"
@@ -201,7 +255,7 @@ export function SalesForm({
               </div>
 
               <div>
-                <label htmlFor="">Desconto (%)</label>
+                <label>Desconto (%)</label>
                 <Input
                   placeholder="Desconto"
                   type="number"
@@ -216,7 +270,7 @@ export function SalesForm({
               </div>
 
               <div>
-                <label htmlFor="">Comissão (%)</label>
+                <label>Comissão (%)</label>
                 <Input
                   placeholder="Comissão"
                   type="number"
@@ -231,7 +285,7 @@ export function SalesForm({
               </div>
 
               <div>
-                <label htmlFor="">Imposto</label>
+                <label>Imposto (%)</label>
                 <Input
                   placeholder="Imposto"
                   type="number"
@@ -246,11 +300,11 @@ export function SalesForm({
               </div>
 
               <div>
-                <label htmlFor="">Taxa do cartão</label>
+                <label>Taxa do cartão (%)</label>
                 <Input
                   placeholder="Taxa do cartão"
                   type="number"
-                  {...register("cardTax")}
+                  {...register("cardTax", { valueAsNumber: true })}
                   required
                 />
                 {errors?.cardTax && (
@@ -258,12 +312,15 @@ export function SalesForm({
                     {errors.cardTax.message}
                   </span>
                 )}
-
-                <Button className="mt-4 cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600">
-                  Salvar
-                </Button>
               </div>
             </div>
+
+            <Button
+              className="mt-4 cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Salvando..." : "Salvar"}
+            </Button>
           </form>
         </DialogContent>
       </Dialog>

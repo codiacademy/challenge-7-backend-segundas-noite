@@ -1,6 +1,5 @@
 import { Aside } from "@/components/Aside";
 import { CardExpenses } from "@/components/Expenses/Cardexpenses";
-
 import { CardsReports } from "@/components/Reports/CardsReports";
 import {
   Select,
@@ -22,10 +21,10 @@ import {
 import { useState } from "react";
 import { FiltroPorPeriodo } from "@/components/Dashboard/FiltroPorPeriodo";
 import { RangeCalendar } from "@/components/Dashboard/RangeCalendar";
+import { AllExpenses } from "@/http/expenses/allExpenses";
+import { useExpenses } from "@/mathcards/expensesCards";
+import { useQuery } from "@tanstack/react-query";
 
-{
-  /*Tipos de dados de gastos*/
-}
 type Gastos = {
   id: string;
   title: string;
@@ -33,103 +32,63 @@ type Gastos = {
   data: string;
   fixed: string;
   Appellant: string;
-  value: string;
+  value: number;
 };
+
 type Filter = "semana" | "mes" | "ano";
+
+const ITEMS_PER_PAGE = 8;
+
 export function Expenses() {
   const [selectedFilter, setselectedFilter] = useState<Filter>("mes");
-  {
-    /*Gastos cadastrados*/
-  }
-  const [gastosList] = useState<Gastos[]>([
-    {
-      id: "1",
-      title: "Aluguel do espaço",
-      description: "Aluguel",
-      data: "01-01-25",
-      fixed: "Fixa",
-      Appellant: "Recorrente",
-      value: "3.000,00",
-    },
-    {
-      id: "2",
-      title: "Conta de luz",
-      description: "Energia Elétrica",
-      data: "01-01-25",
-      fixed: "Variavel",
-      Appellant: "Recorrente",
-      value: "450,00",
-    },
-    {
-      id: "3",
-      title: "Água",
-      description: "Conta de água",
-      data: "01-01-25",
-      fixed: "Fixa",
-      Appellant: "Recorrente",
-      value: "223,00",
-    },
-    {
-      id: "4",
-      title: "Reforma do escritório",
-      description: "Obra",
-      data: "12-04-25",
-      fixed: "Variável",
-      Appellant: "",
-      value: "4.530,00",
-    },
-    {
-      id: "5",
-      title: "Compra do notebook",
-      description: "Compra",
-      data: "10-02-25",
-      fixed: "Variável",
-      Appellant: "",
-      value: "3.060,00",
-    },
-    {
-      id: "6",
-      title: "Internet",
-      description: "Conta de internet",
-      data: "01-01-25",
-      fixed: "Fixa",
-      Appellant: "Recorrente",
-      value: "740,00",
-    },
-    {
-      id: "7",
-      title: "Compra de leds novos e instalação",
-      description: "Obra",
-      data: "01-01-25",
-      fixed: "Variável",
-      Appellant: "",
-      value: "350,00",
-    },
-    {
-      id: "8",
-      title: "Conserto dos notebooks",
-      description: "Reparos",
-      data: "01-01-25",
-      fixed: "Variável",
-      Appellant: "",
-      value: "2.500,00",
-    },
-  ]);
-
-  {
-    /*Lógica do filtro de gastos*/
-  }
   const [selectedfixed, setSelectedfixed] = useState<string>("all");
+  const [page, setPage] = useState(1);
+
+  const {
+    data: expensesList = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<Gastos[]>({
+    queryKey: ["expenses"],
+    queryFn: async () => {
+      const resp = await AllExpenses();
+      return resp.map((e: any) => ({
+        id: e.id,
+        title: e.name ?? e.title ?? "Despesa",
+        description: e.description ?? "",
+        data: e.date ? new Date(e.date).toLocaleDateString("pt-BR") : "",
+        fixed: e.type === "Fixa" ? "Fixa" : "Variável",
+        Appellant: e.appellant ?? "",
+        value: Number(e.value ?? e.valor ?? 0),
+      }));
+    },
+    staleTime: 1000 * 60,
+  });
+
+  const reloadExpenses = () => {
+    refetch();
+  };
+
   const filteredGastos =
     selectedfixed === "all"
-      ? gastosList
-      : gastosList.filter((gastos) => gastos.fixed === selectedfixed);
+      ? expensesList
+      : expensesList.filter((g) => g.fixed === selectedfixed);
+
+  const totalPages = Math.ceil(filteredGastos.length / ITEMS_PER_PAGE);
+
+  const paginatedExpenses = filteredGastos.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE,
+  );
+
+  const { totais } = useExpenses();
 
   return (
     <div className="flex h-screen bg-gray-100">
       <Aside />
       <div className="flex w-full flex-col gap-2 overflow-auto p-5">
-        {/*Header*/}
+        {/* Header */}
         <div className="flex flex-col justify-between lg:flex-row lg:items-center">
           <div className="flex flex-col gap-1">
             <h1 className="text-4xl font-bold">Módulo de Gastos</h1>
@@ -145,31 +104,33 @@ export function Expenses() {
             icon={Plus}
           />
         </div>
-        {/*Cards com os tipos de despesas*/}
+
+        {/* Cards */}
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <CardsReports
-            title={"Despesas fixas"}
-            value={"4.413,00"}
-            color={"red"}
+            title="Despesas fixas"
+            value={totais.totalFixas}
+            color="red"
             icon={Calendar}
-            bgColor={"red"}
+            bgColor="red"
           />
           <CardsReports
-            title={"Despesas variáveis"}
-            value={"10.440,00"}
-            color={"orange"}
+            title="Despesas variáveis"
+            value={totais.totalVariaveis}
+            color="orange"
             icon={TrendingDown}
-            bgColor={"orange"}
+            bgColor="orange"
           />
           <CardsReports
-            title={"Total de gastos"}
-            value={"14.853,00"}
-            color={"purple"}
+            title="Total de gastos"
+            value={totais.totalGastos}
+            color="purple"
             icon={TrendingDown}
-            bgColor={"purple"}
+            bgColor="purple"
           />
         </section>
-        {/*Inputs de pesquisa e select*/}
+
+        {/* Filtros */}
         <div className="flex w-full flex-col gap-4 rounded-lg bg-white p-5 shadow lg:flex-row lg:items-center">
           <div className="flex w-full items-center gap-3 rounded-lg border px-3 py-2 lg:w-5/6">
             <Search />
@@ -184,40 +145,61 @@ export function Expenses() {
             onChange={setselectedFilter}
           />
           <RangeCalendar />
-          {/*Select e filtro do tipo de despesa*/}
           <div className="h-full w-full lg:w-1/6">
             <Select
               value={selectedfixed}
-              onValueChange={(value) => setSelectedfixed(value)}
+              onValueChange={(value) => {
+                setSelectedfixed(value);
+                setPage(1);
+              }}
             >
               <SelectTrigger className="flex w-full cursor-pointer p-5">
                 <FilterIcon />
                 <SelectValue placeholder="Todas as categorias" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as categrias</SelectItem>
+                <SelectItem value="all">Todas as categorias</SelectItem>
                 <SelectItem value="Fixa">Despesas Fixas</SelectItem>
-                <SelectItem value="Variável">Despesas Variaveis</SelectItem>
+                <SelectItem value="Variável">Despesas Variáveis</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-        {/*Tabela de cards de gastos*/}
+
+        {/* Lista */}
         <section className="grid gap-5 rounded-md border bg-white p-4">
-          <h1 className="text-2xl font-semibold">Todas as depesas</h1>
-          {filteredGastos.map((Gastos) => (
+          <h1 className="text-2xl font-semibold">Todas as despesas</h1>
+
+          {isError && <p className="text-red-500">Erro ao carregar despesas</p>}
+          {isLoading && <p>Carregando...</p>}
+
+          {paginatedExpenses.map((g) => (
             <CardExpenses
-              title={Gastos.title}
-              description={Gastos.description}
-              data={Gastos.data}
-              fixed={Gastos.fixed}
-              value={Gastos.value}
+              key={g.id}
+              id={g.id}
+              title={g.title}
+              description={g.description}
+              data={g.data}
+              fixed={g.fixed}
+              value={g.value}
+              onSuccess={reloadExpenses}
             />
           ))}
-          {/*Botões de paginação*/}
+
           <div className="mt-1 mr-1 flex justify-end gap-1">
-            <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
-            <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
+
+            <button
+              disabled={page === totalPages || totalPages === 0}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
           </div>
         </section>
       </div>
