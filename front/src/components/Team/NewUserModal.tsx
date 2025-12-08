@@ -116,8 +116,6 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                   <SelectItem value="ADIMIN">Adimin</SelectItem>
                   <SelectItem value="MANAGER">Manager</SelectItem>
                   <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
               </Select>
             </div>
