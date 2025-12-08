@@ -23,23 +23,14 @@ async function Autenticate(req: Request, res: Response) {
     }
 
     const secret = process.env.JWT_SECRET || 'changeme'
-    const token = jwt.sign(
-      { sub: user!.id, email: user!.email, role: user!.sector.toUpperCase() },
-      secret,
-      {
-        expiresIn: '1h',
-      }
-    )
+    const token = jwt.sign({ sub: user!.id, email: user!.email }, secret, {
+      expiresIn: '1h',
+    })
 
     return res.status(200).json({
       message: 'Usuário logado com sucesso',
       token,
-      user: {
-        id: user!.id,
-        email: user!.email,
-        role: user!.sector,
-        name: user!.name ?? null,
-      },
+      user: { id: user!.id, email: user!.email, name: user!.name ?? null },
     })
   } catch (error) {
     if (error instanceof Error) {

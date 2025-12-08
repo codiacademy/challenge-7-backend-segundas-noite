@@ -29,27 +29,20 @@ export function AlterarModal({ close, user, onEditUser }: modalProps) {
 
   async function handleEditUser(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      const updatedUser = await UpdateCollaborator({
-        id: user!.id,
-        name,
-        email,
-        phoneNumber,
-        wage: Number(wage),
-        sector,
-        status: status as "ATIVO" | "INATIVO" | "FERIAS",
-      });
 
-      onEditUser(updatedUser.user);
-      toast.success("Colaborador editado com sucesso!");
-      close();
-    } catch (error: any) {
-      if (error.response?.status === 403) {
-        toast.error("Voce nao tem permissao para editar colaboradores");
-      } else {
-        toast.error("Erro ao editar colaborador");
-      }
-    }
+    const updatedUser = await UpdateCollaborator({
+      id: user!.id,
+      name,
+      email,
+      phoneNumber,
+      wage: Number(wage),
+      sector,
+      status: status as "ATIVO" | "INATIVO" | "FERIAS",
+    });
+
+    onEditUser(updatedUser.user);
+    toast.success("Colaborador editado com sucesso!");
+    close();
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-3">
@@ -116,6 +109,8 @@ export function AlterarModal({ close, user, onEditUser }: modalProps) {
                   <SelectItem value="ADIMIN">Adimin</SelectItem>
                   <SelectItem value="MANAGER">Manager</SelectItem>
                   <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
               </Select>
             </div>

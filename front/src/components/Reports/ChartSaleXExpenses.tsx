@@ -27,21 +27,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartSaleXEpxenses() {
-  // ✅ Hooks NO LUGAR CERTO
-  const { totalVendas, loading: loadingSales } = useSales();
-  const { totais, loading: loadingExpenses } = useExpenses();
+  //  Hooks NO LUGAR CERTO
+  const { totalVendas } = useSales();
+  const { totais } = useExpenses();
 
-  if (loadingSales || loadingExpenses) {
-    return (
-      <Card>
-        <CardContent className="flex h-[300px] items-center justify-center">
-          Carregando gráfico...
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // ✅ Dados corretos e reativos
+  //  Dados corretos e reativos
   const chartData = [
     {
       label: "Total",
@@ -61,7 +51,7 @@ export function ChartSaleXEpxenses() {
             <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
               <CartesianGrid vertical={false} />
 
-              {/* ✅ XAxis EXISTE AGORA */}
+              {/*  XAxis EXISTE AGORA */}
               <XAxis
                 dataKey="label"
                 tickLine={false}

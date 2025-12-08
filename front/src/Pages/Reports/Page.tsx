@@ -7,10 +7,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar, Download } from "lucide-react";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Percent, Plus } from "lucide-react";
-
 import { CardsReports } from "@/components/Reports/CardsReports";
 import { TrendingDown, TrendingUp, TrendingUpDown } from "lucide-react";
 import { ChartSaleXEpxenses } from "@/components/Reports/ChartSaleXExpenses";
@@ -22,12 +20,26 @@ import { ChartTrendAnalysis } from "@/components/Reports/ChartTrendAnalysis";
 import { useExpenses } from "@/mathcards/expensesCards";
 import { useSales } from "@/mathcards/salesCard";
 import { useBalance } from "@/mathcards/balance";
+import { useExpensesByCategory } from "@/hooks/useExpenses";
 
 export function Reports() {
   /* funções dos cards */
   const { totais } = useExpenses();
   const { totalVendas } = useSales();
   const { balanco } = useBalance();
+  const expenses = useExpensesByCategory();
+
+  // Define cores padronizadas
+  const colors: Record<string, string> = {
+    Aluguel: "#a855f7",
+    Pagamento: "#ef4444",
+    Energia: "#facc15",
+    Internet: "#22c55e",
+    Manutenção: "#3b82f6",
+    Suprimentos: "#06b6d4",
+    Marketing: "#10b981",
+    Outros: "#6b7280",
+  };
 
   return (
     <div className="flex h-screen">
@@ -126,63 +138,29 @@ export function Reports() {
               {/* Detalhamento de gastos */}
               <div className="flex flex-col gap-4 rounded-lg bg-white p-3">
                 <h1 className="text-2xl font-bold">Detalhamento de Gastos</h1>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-purple-500"></div>
-                      <span className="font-semibold">Aluguel</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-red-500"></div>
-                      <span className="font-semibold">Folha de Pagamento</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-yellow-500"></div>
-                      <span className="font-semibold">Energia</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-green-500"></div>
-                      <span className="font-semibold">Internet</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-blue-500"></div>
-                      <span className="font-semibold">Manutenção</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-cyan-500"></div>
-                      <span className="font-semibold">Suprimentos</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-emerald-500"></div>
-                      <span className="font-semibold">Marketing</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
-                  <div className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row">
-                    <div className="flex flex-col items-center gap-3 lg:flex-row">
-                      <div className="h-4 w-4 rounded-[100%] bg-gray-500"></div>
-                      <span className="font-semibold">Outros</span>
-                    </div>
-                    <span className="font-bold text-red-500">R$ 15.000,00</span>
-                  </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                  {expenses.map((expense) => {
+                    return (
+                      <div
+                        key={expense.name}
+                        className="flex flex-col items-center justify-between rounded-lg border border-gray-300 px-5 py-1.5 lg:flex-row"
+                      >
+                        <div className="flex flex-col items-center gap-3 lg:flex-row">
+                          <div
+                            className="h-4 w-4 rounded-full"
+                            style={{ backgroundColor: colors[expense.name] }}
+                          />
+                          <span className="font-semibold">{expense.name}</span>
+                        </div>
+                        <span className="font-bold text-red-500">
+                          R${" "}
+                          {expense.total.toLocaleString("pt-BR", {
+                            minimumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

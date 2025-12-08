@@ -1,3 +1,4 @@
+import { CoursesForm } from "@/components/Courses/CoursesFormModal";
 import {
   Card,
   CardContent,
@@ -7,10 +8,8 @@ import {
 } from "../ui/card";
 
 import type { IconBaseProps } from "react-icons";
-import { SquarePen, Trash2 } from "lucide-react";
-import { useState } from "react";
-type CourseCardProps = {
-  id: string;
+import { SquarePen } from "lucide-react";
+interface CourseCardProps {
   imageUrl: string;
   title: string;
   status: string;
@@ -22,11 +21,8 @@ type CourseCardProps = {
   iconMain?: React.ComponentType<IconBaseProps>;
   iconSecundary?: React.ComponentType<IconBaseProps>;
   price: number;
-  openEdit: () => void;
-  onDelete: (id: string) => void;
-};
+}
 export function CourseCard({
-  id,
   imageUrl,
   title,
   status,
@@ -38,25 +34,16 @@ export function CourseCard({
   iconMain: IconMain,
   iconSecundary: IconSecundary,
   price,
-  openEdit,
-  onDelete,
 }: CourseCardProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
   return (
     <>
       <Card className="relative flex w-full flex-col gap-4 overflow-hidden lg:w-76">
         <CardHeader className="w-full border">
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              className="absolute top-0 left-0 h-45 w-full object-cover"
-              alt={`Imagem do curso ${title}`}
-            />
-          ) : (
-            <div className="absolute top-0 left-0 flex h-45 w-full items-center justify-center bg-gray-200 text-gray-500">
-              Sem imagem
-            </div>
-          )}
+          <img
+            src={imageUrl}
+            className="absolute top-0 left-0 h-45 w-full"
+            alt="Logo do Curso Javascript"
+          />
         </CardHeader>
 
         <CardContent className="mt-36">
@@ -95,22 +82,13 @@ export function CourseCard({
             </span>
           </CardDescription>
           <CardDescription>
-            <div className="flex gap-2">
-              <button
-                onClick={openEdit}
-                className="flex w-11/12 cursor-pointer items-center justify-center gap-3 rounded-lg border p-2 font-bold hover:bg-gray-100"
-              >
-                <SquarePen />
-                Editar
-              </button>
-              <button
-                onClick={() => id && onDelete(id)}
-                disabled={!id || isDeleting}
-                className="flex cursor-pointer items-center justify-center rounded-lg border p-2 font-bold text-red-500 hover:bg-gray-100"
-              >
-                <Trash2 />
-              </button>
-            </div>
+            <CoursesForm
+              trigger="Editar curso"
+              title="Editar dados do curso"
+              description="Insira os dados"
+              button="Salvar"
+              Icon={SquarePen}
+            />
           </CardDescription>
         </CardContent>
       </Card>

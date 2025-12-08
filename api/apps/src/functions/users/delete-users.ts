@@ -1,10 +1,9 @@
 import express from 'express'
-import { authenticateSector } from '../middlewares/authenticateSector.ts'
 export const router = express.Router()
 
 import { prisma } from '../../lib/prisma.js'
 
-router.delete('/users/:id', authenticateSector('ADIMIN'), async (req, res) => {
+router.delete('/users/:id', async (req, res) => {
   try {
     const { id } = req.params
 

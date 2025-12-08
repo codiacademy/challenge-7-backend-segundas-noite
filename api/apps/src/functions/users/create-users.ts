@@ -2,8 +2,7 @@ import express from 'express'
 export const router = express.Router()
 import { prisma } from '../../lib/prisma.js'
 import { hash } from 'bcryptjs'
-import { authenticateSector } from '../middlewares/authenticateSector.ts'
-router.post('/users', authenticateSector('ADIMIN'), async (req, res) => {
+router.post('/users', async (req, res) => {
   try {
     const {
       name,

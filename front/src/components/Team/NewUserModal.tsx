@@ -26,27 +26,20 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
 
   async function handleAddUser(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      const newUser = await CreateCollaborator({
-        name,
-        email,
-        phoneNumber,
-        wage: Number(salario),
-        sector,
-        status,
-        password,
-      });
 
-      onAddUser(newUser.newUser);
-      toast.success("Colaborador criado com sucesso!");
-      haandleOpenModalNew();
-    } catch (error: any) {
-      if (error.response?.status === 403) {
-        toast.error("Voce nao tem permissao para criar colaboradores");
-      } else {
-        toast.error("Erro ao criar colaborador");
-      }
-    }
+    const newUser = await CreateCollaborator({
+      name,
+      email,
+      phoneNumber,
+      wage: Number(salario),
+      sector,
+      status,
+      password,
+    });
+
+    onAddUser(newUser.newUser);
+    toast.success("Colaborador criado com sucesso!");
+    haandleOpenModalNew();
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-3">
@@ -116,6 +109,8 @@ export function NewUserModal({ haandleOpenModalNew, onAddUser }: modalProps) {
                   <SelectItem value="ADIMIN">Adimin</SelectItem>
                   <SelectItem value="MANAGER">Manager</SelectItem>
                   <SelectItem value="ACCOUNTANT">Accountant</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Receptionista">Receptionista</SelectItem>
                 </SelectContent>
               </Select>
             </div>
