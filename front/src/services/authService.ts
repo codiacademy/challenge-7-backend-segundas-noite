@@ -1,4 +1,4 @@
-interface LoginData {
+/* interface LoginData {
   email: string;
   password: string;
 }
@@ -20,3 +20,4 @@ export async function fakeLogin({ email, password }: LoginData) {
     }, 1000);
   });
 }
+ */

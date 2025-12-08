@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { updateFranchise } from "@/services/unitsService";
+import { updateFranchise } from "@/http/franchise/unitsService";
 import { toast } from "sonner";
 import { Controller } from "react-hook-form";
 import { Select } from "react-day-picker";

@@ -107,7 +107,6 @@ export function SalesForm({
         comisao: data.commission,
         imposto: data.tax,
         taxaCartao: data.cardTax,
-        // ⚡ Não enviamos valorLiquido nem dataVenda, o backend calcula
       };
 
       await Createsales(payload);

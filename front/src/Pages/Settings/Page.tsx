@@ -1,4 +1,4 @@
-import { getFranchises } from "../../services/unitsService";
+import { getFranchises } from "../../http/franchise/unitsService";
 
 import { useEffect } from "react";
 
@@ -33,7 +33,7 @@ import { CardSessoes } from "@/components/Settings/ActiveSessionCard";
 import { useState } from "react";
 import { FranchisesForm } from "@/components/Franquias/FranchisesForm";
 import { Button } from "@/components/ui/button";
-import { deleteFranchise } from "@/services/unitsService";
+import { deleteFranchise } from "@/http/franchise/unitsService";
 import { toast } from "sonner";
 import { set } from "date-fns";
 
