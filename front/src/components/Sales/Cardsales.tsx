@@ -13,6 +13,7 @@ interface CardSalesProps {
   phone: string;
   type?: "Online" | "Presencial";
   data: string;
+  courseName: string; // nome do curso associado
   grossvalue: number;
   discount: number;
   deduction: number;
@@ -26,6 +27,7 @@ export function CardSales({
   phone,
   type,
   data,
+  courseName,
   grossvalue,
   discount,
   deduction,
@@ -50,12 +52,8 @@ export function CardSales({
     try {
       setIsDeleting(true);
       await DeleteSales({ id });
-
       toast.success("Venda deletada com sucesso!");
-
-      queryClient.invalidateQueries({
-        queryKey: ["sales"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
     } catch (error) {
       console.log(error);
       toast.error("Erro ao deletar venda");

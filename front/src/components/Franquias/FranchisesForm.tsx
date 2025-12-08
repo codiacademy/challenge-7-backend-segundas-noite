@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import type { IconBaseProps } from "react-icons";
 
-import { createFranchise } from "@/services/unitsService";
+import { createFranchise } from "@/http/franchise/unitsService";
 
 interface FranchisesProps {
   name: string;
