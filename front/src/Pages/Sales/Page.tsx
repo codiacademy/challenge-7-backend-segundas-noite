@@ -19,7 +19,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePagination } from "@/hooks/Pagination";
 
 type Venda = {
   id: string;
@@ -38,33 +39,38 @@ type Filter = "semana" | "mes" | "ano";
 
 export function Sales() {
   const queryClient = useQueryClient();
+
   const [selectedFilter, setSelectedFilter] = useState<Filter>("mes");
   const [selectedVendas, setSelectedVendas] = useState<string>("all");
 
-  const {
-    data: salesList = [],
-    isLoading,
-    isError,
-  } = useQuery<Venda[]>({
-    queryKey: ["sales"],
-    queryFn: async () => {
-      const resp = await AllSales();
-      return resp.map((e: any) => ({
-        id: e.id,
-        modality: e.modalidade === "ONLINE" ? "Online" : "Presencial",
-        name: e.nomeAluno ?? "Venda",
-        email: e.email ?? "",
-        phone: e.telefone ?? "",
-        data: e.dataVenda
-          ? new Date(e.dataVenda).toLocaleDateString("pt-BR")
-          : "",
-        grossvalue: e.valorBruto ?? 0,
-        discount: e.desconto ?? 0,
-        deduction: e.imposto ?? 0,
-        finalvalue: e.valorLiquido ?? 0,
-      }));
-    },
-  });
+  const { data, isLoading, isError, page, nextPage, prevPage, hasNextPage } =
+    usePagination<Venda>({
+      queryKey: "sales",
+      limit: 8,
+      queryFn: async (page) => {
+        const resp = await AllSales();
+
+        const mapped: Venda[] = resp.map((e: any) => ({
+          id: e.id,
+          modality: e.modalidade === "ONLINE" ? "Online" : "Presencial",
+          name: e.nomeAluno ?? "Venda",
+          email: e.email ?? "",
+          phone: e.telefone ?? "",
+          data: e.dataVenda
+            ? new Date(e.dataVenda).toLocaleDateString("pt-BR")
+            : "",
+          grossvalue: e.valorBruto ?? 0,
+          discount: e.desconto ?? 0,
+          deduction: e.imposto ?? 0,
+          finalvalue: e.valorLiquido ?? 0,
+        }));
+
+        const start = (page - 1) * 8;
+        return mapped.slice(start, start + 8);
+      },
+    });
+
+  const salesList = data ?? [];
 
   const filteredVendas =
     selectedVendas === "all"
@@ -74,6 +80,7 @@ export function Sales() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Aside />
+
       <div className="flex w-full flex-col gap-2 overflow-auto p-5">
         {/* Header */}
         <div className="flex w-full flex-col justify-between lg:flex-row lg:items-center">
@@ -83,6 +90,7 @@ export function Sales() {
               Gerencie vendas de cursos online e presenciais
             </p>
           </div>
+
           <SalesForm
             title="Cadastre sua nova venda"
             description="Insira os dados da venda"
@@ -104,11 +112,14 @@ export function Sales() {
               className="w-full outline-none"
             />
           </div>
+
           <FiltroPorPeriodo
             value={selectedFilter}
             onChange={setSelectedFilter}
           />
+
           <RangeCalendar />
+
           <div className="h-full w-full lg:w-1/6">
             <Select value={selectedVendas} onValueChange={setSelectedVendas}>
               <SelectTrigger className="flex w-full cursor-pointer p-5">
@@ -124,37 +135,34 @@ export function Sales() {
           </div>
         </div>
 
-        {/* Cards */}
+        {/* Lista */}
         <section className="mt-2 grid gap-5 rounded-md border bg-white p-4">
           <h1 className="text-2xl font-semibold">Vendas cadastradas</h1>
+
           {isError && <p className="text-red-500">Erro ao carregar vendas.</p>}
-          {isLoading ? (
-            <p>Carregando vendas...</p>
-          ) : (
+          {isLoading && <p>Carregando vendas...</p>}
+
+          {!isLoading &&
             filteredVendas.map((venda) => (
               <CardSales
                 key={venda.id}
-                id={venda.id}
-                name={venda.name}
-                email={venda.email}
-                phone={venda.phone}
+                {...venda}
                 type={venda.modality}
-                data={venda.data}
-                grossvalue={venda.grossvalue}
-                discount={venda.discount}
-                deduction={venda.deduction}
-                finalvalue={venda.finalvalue}
                 onSuccess={() =>
                   queryClient.invalidateQueries({ queryKey: ["sales"] })
                 }
               />
-            ))
-          )}
+            ))}
 
-          {/* Paginação */}
+          {/* PAGINAÇÃO */}
           <div className="mt-1 mr-1 flex justify-end gap-1">
-            <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
-            <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
+            <button onClick={prevPage} disabled={page === 1}>
+              <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
+
+            <button onClick={nextPage} disabled={!hasNextPage}>
+              <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
           </div>
         </section>
       </div>

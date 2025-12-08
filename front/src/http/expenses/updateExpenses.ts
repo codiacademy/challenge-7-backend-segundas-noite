@@ -2,7 +2,15 @@ import { api } from "@/lib/axios";
 
 interface updateExpenseProps {
   id: string;
-  name: string;
+  name:
+    | "Aluguel"
+    | "Energia"
+    | "Manutenção"
+    | "Marketing"
+    | "Suprimentos"
+    | "Internet"
+    | "Pagamento"
+    | "Outros";
   description: string;
   value: number;
   type: "Fixa" | "Variável";

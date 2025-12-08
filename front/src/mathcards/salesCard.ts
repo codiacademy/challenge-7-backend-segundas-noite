@@ -6,7 +6,7 @@ export type Vendas = {
   name: string;
   email: string;
   phone: string;
-  modality: string;
+  modality: "Online" | "Presencial";
   data: string;
   grossvalue: number;
   discount: number;
@@ -23,6 +23,8 @@ export function useSales(
 ) {
   const [salesList, setSalesList] = useState<Vendas[]>([]);
   const [totalVendas, setTotalVendas] = useState(0);
+  const [totalOnline, setTotalOnline] = useState(0);
+  const [totalPresencial, setTotalPresencial] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,8 +32,10 @@ export function useSales(
     async function loadSales() {
       setLoading(true);
       setError(null);
+
       try {
         const resp: any[] = await AllSales();
+
         const mapped: Vendas[] = resp.map((e) => ({
           id: e.id,
           modality: e.modalidade === "ONLINE" ? "Online" : "Presencial",
@@ -47,37 +51,52 @@ export function useSales(
           finalvalue: Number(e.valorLiquido ?? 0),
         }));
 
-        // Filtra por tipo
-        const filteredByType =
-          typeFilter === "all"
-            ? mapped
-            : mapped.filter((v) => v.modality === typeFilter);
-
-        // Filtra por período
+        //  Filtro por período (base para todos os totais)
         const today = new Date();
-        const filteredByPeriod = filteredByType.filter((v) => {
+        const filteredByPeriod = mapped.filter((v) => {
           const vendaDate = new Date(v.data);
           switch (periodFilter) {
-            case "semana":
+            case "semana": {
               const weekAgo = new Date();
               weekAgo.setDate(today.getDate() - 7);
               return vendaDate >= weekAgo && vendaDate <= today;
-            case "mes":
+            }
+            case "mes": {
               const monthAgo = new Date();
               monthAgo.setMonth(today.getMonth() - 1);
               return vendaDate >= monthAgo && vendaDate <= today;
-            case "ano":
+            }
+            case "ano": {
               const yearAgo = new Date();
               yearAgo.setFullYear(today.getFullYear() - 1);
               return vendaDate >= yearAgo && vendaDate <= today;
+            }
             default:
               return true;
           }
         });
 
-        setSalesList(filteredByPeriod);
+        //  Totais separados (independem do filtro de tipo)
+        const onlineTotal = filteredByPeriod
+          .filter((v) => v.modality === "Online")
+          .reduce((acc, curr) => acc + curr.finalvalue, 0);
+
+        const presencialTotal = filteredByPeriod
+          .filter((v) => v.modality === "Presencial")
+          .reduce((acc, curr) => acc + curr.finalvalue, 0);
+
+        setTotalOnline(onlineTotal);
+        setTotalPresencial(presencialTotal);
+
+        //  Filtro por tipo (lista visível)
+        const filteredByType =
+          typeFilter === "all"
+            ? filteredByPeriod
+            : filteredByPeriod.filter((v) => v.modality === typeFilter);
+
+        setSalesList(filteredByType);
         setTotalVendas(
-          filteredByPeriod.reduce((acc, curr) => acc + curr.finalvalue, 0),
+          filteredByType.reduce((acc, curr) => acc + curr.finalvalue, 0),
         );
       } catch (err) {
         console.error(err);
@@ -90,5 +109,12 @@ export function useSales(
     loadSales();
   }, [typeFilter, periodFilter]);
 
-  return { salesList, totalVendas, loading, error };
+  return {
+    salesList,
+    totalVendas,
+    totalOnline,
+    totalPresencial,
+    loading,
+    error,
+  };
 }

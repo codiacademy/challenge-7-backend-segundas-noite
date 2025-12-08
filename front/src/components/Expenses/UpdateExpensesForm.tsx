@@ -30,7 +30,15 @@ interface ExpensesProps {
   icon?: React.ComponentType<IconBaseProps>;
   initialData: {
     id: string;
-    name?: string;
+    name?:
+      | "Aluguel"
+      | "Energia"
+      | "Manutenção"
+      | "Marketing"
+      | "Suprimentos"
+      | "Internet"
+      | "Pagamento"
+      | "Outros";
     type?: "Fixa" | "Variável";
     description?: string;
     value?: number;
@@ -45,7 +53,19 @@ const formSchema = z.object({
   description: z.string({
     message: "O campo descrição da despesa é obrigatório",
   }),
-  name: z.string({ message: "O campo nome da despesa é obrigatório" }),
+  name: z.enum(
+    [
+      "Aluguel",
+      "Energia",
+      "Manutenção",
+      "Marketing",
+      "Suprimentos",
+      "Internet",
+      "Pagamento",
+      "Outros",
+    ],
+    { message: "O campo nome da despesa é obrigatório" },
+  ),
   value: z.coerce.number({ message: "O campo valor é obrigatório" }),
 });
 
@@ -151,12 +171,27 @@ export function UpdateExpensesForm({
 
           <div>
             <span className="text-left">Nome da despesa:</span>
-            <Input placeholder="Digite o nome" {...register("name")} />
-            {errors?.name && (
-              <span className="text-left text-sm text-red-500">
-                {errors.name.message}
-              </span>
-            )}
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione um item para cadastrar despesa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Aluguel">Aluguel</SelectItem>
+                    <SelectItem value="Energia">Energia</SelectItem>
+                    <SelectItem value="Manutenção">Manutenção</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                    <SelectItem value="Suprimentos">Suprimentos</SelectItem>
+                    <SelectItem value="Internet">Internet</SelectItem>
+                    <SelectItem value="Pagamento">Pagamento</SelectItem>
+                    <SelectItem value="Outros">Outros</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <div>

@@ -23,7 +23,7 @@ import { FiltroPorPeriodo } from "@/components/Dashboard/FiltroPorPeriodo";
 import { RangeCalendar } from "@/components/Dashboard/RangeCalendar";
 import { AllExpenses } from "@/http/expenses/allExpenses";
 import { useExpenses } from "@/mathcards/expensesCards";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 type Gastos = {
   id: string;
@@ -37,12 +37,13 @@ type Gastos = {
 
 type Filter = "semana" | "mes" | "ano";
 
+const ITEMS_PER_PAGE = 8;
+
 export function Expenses() {
-  const queryClient = useQueryClient();
   const [selectedFilter, setselectedFilter] = useState<Filter>("mes");
   const [selectedfixed, setSelectedfixed] = useState<string>("all");
+  const [page, setPage] = useState(1);
 
-  // TanStack Query para buscar despesas
   const {
     data: expensesList = [],
     isLoading,
@@ -62,18 +63,24 @@ export function Expenses() {
         value: Number(e.value ?? e.valor ?? 0),
       }));
     },
-    staleTime: 1000 * 60, // 1 minuto
+    staleTime: 1000 * 60,
   });
 
-  // Função que recarrega os gastos, usada no onSuccess dos cards
   const reloadExpenses = () => {
-    refetch(); // recarrega a query do TanStack
+    refetch();
   };
 
   const filteredGastos =
     selectedfixed === "all"
       ? expensesList
-      : expensesList.filter((gastos) => gastos.fixed === selectedfixed);
+      : expensesList.filter((g) => g.fixed === selectedfixed);
+
+  const totalPages = Math.ceil(filteredGastos.length / ITEMS_PER_PAGE);
+
+  const paginatedExpenses = filteredGastos.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE,
+  );
 
   const { totais } = useExpenses();
 
@@ -81,7 +88,7 @@ export function Expenses() {
     <div className="flex h-screen bg-gray-100">
       <Aside />
       <div className="flex w-full flex-col gap-2 overflow-auto p-5">
-        {/*Header*/}
+        {/* Header */}
         <div className="flex flex-col justify-between lg:flex-row lg:items-center">
           <div className="flex flex-col gap-1">
             <h1 className="text-4xl font-bold">Módulo de Gastos</h1>
@@ -98,32 +105,32 @@ export function Expenses() {
           />
         </div>
 
-        {/*Cards com os tipos de despesas*/}
+        {/* Cards */}
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <CardsReports
-            title={"Despesas fixas"}
+            title="Despesas fixas"
             value={totais.totalFixas}
-            color={"red"}
+            color="red"
             icon={Calendar}
-            bgColor={"red"}
+            bgColor="red"
           />
           <CardsReports
-            title={"Despesas variáveis"}
+            title="Despesas variáveis"
             value={totais.totalVariaveis}
-            color={"orange"}
+            color="orange"
             icon={TrendingDown}
-            bgColor={"orange"}
+            bgColor="orange"
           />
           <CardsReports
-            title={"Total de gastos"}
+            title="Total de gastos"
             value={totais.totalGastos}
-            color={"purple"}
+            color="purple"
             icon={TrendingDown}
-            bgColor={"purple"}
+            bgColor="purple"
           />
         </section>
 
-        {/*Inputs de pesquisa e select*/}
+        {/* Filtros */}
         <div className="flex w-full flex-col gap-4 rounded-lg bg-white p-5 shadow lg:flex-row lg:items-center">
           <div className="flex w-full items-center gap-3 rounded-lg border px-3 py-2 lg:w-5/6">
             <Search />
@@ -138,47 +145,61 @@ export function Expenses() {
             onChange={setselectedFilter}
           />
           <RangeCalendar />
-          {/*Select e filtro do tipo de despesa*/}
           <div className="h-full w-full lg:w-1/6">
             <Select
               value={selectedfixed}
-              onValueChange={(value) => setSelectedfixed(value)}
+              onValueChange={(value) => {
+                setSelectedfixed(value);
+                setPage(1);
+              }}
             >
               <SelectTrigger className="flex w-full cursor-pointer p-5">
                 <FilterIcon />
                 <SelectValue placeholder="Todas as categorias" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as categrias</SelectItem>
+                <SelectItem value="all">Todas as categorias</SelectItem>
                 <SelectItem value="Fixa">Despesas Fixas</SelectItem>
-                <SelectItem value="Variável">Despesas Variaveis</SelectItem>
+                <SelectItem value="Variável">Despesas Variáveis</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/*Tabela de cards de gastos*/}
+        {/* Lista */}
         <section className="grid gap-5 rounded-md border bg-white p-4">
-          <h1 className="text-2xl font-semibold">Todas as depesas</h1>
+          <h1 className="text-2xl font-semibold">Todas as despesas</h1>
+
           {isError && <p className="text-red-500">Erro ao carregar despesas</p>}
           {isLoading && <p>Carregando...</p>}
-          {filteredGastos.map((Gastos) => (
+
+          {paginatedExpenses.map((g) => (
             <CardExpenses
-              key={Gastos.id}
-              id={Gastos.id}
-              title={Gastos.title}
-              description={Gastos.description}
-              data={Gastos.data}
-              fixed={Gastos.fixed}
-              value={Gastos.value}
+              key={g.id}
+              id={g.id}
+              title={g.title}
+              description={g.description}
+              data={g.data}
+              fixed={g.fixed}
+              value={g.value}
               onSuccess={reloadExpenses}
             />
           ))}
 
-          {/*Botões de paginação*/}
           <div className="mt-1 mr-1 flex justify-end gap-1">
-            <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
-            <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition duration-[2s] hover:bg-gray-400" />
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              <ChevronLeft className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
+
+            <button
+              disabled={page === totalPages || totalPages === 0}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              <ChevronRight className="h-10 w-10 rounded-[8px] border-2 transition hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-40" />
+            </button>
           </div>
         </section>
       </div>
