@@ -1,38 +1,38 @@
-import { compare } from 'bcryptjs'
-import { prisma } from '../lib/prisma.ts'
-import { Request, Response } from 'express'
-import express from 'express'
-import jwt from 'jsonwebtoken'
+import { compare } from "bcryptjs";
+import { prisma } from "../lib/prisma.ts";
+import { Request, Response } from "express";
+import express from "express";
+import jwt from "jsonwebtoken";
 
-export const router = express.Router()
+export const router = express.Router();
 async function Autenticate(req: Request, res: Response) {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
     // busca pelo usuário (assumindo email @unique no schema)
-    const user = await prisma.collaborator.findUnique({ where: { email } })
+    const user = await prisma.collaborator.findUnique({ where: { email } });
 
     if (!user) {
-      return res.status(401).json({ message: 'Email ou senha invalidos' })
+      return res.status(401).json({ message: "Email ou senha invalidos" });
     }
 
-    const passwordCompare = await compare(password, user?.password!)
+    const passwordCompare = await compare(password, user?.password!);
 
     if (!passwordCompare) {
-      return res.status(401).json({ message: 'Email ou senha invalidos' })
+      return res.status(401).json({ message: "Email ou senha invalidos" });
     }
 
-    const secret = process.env.JWT_SECRET || 'changeme'
+    const secret = process.env.JWT_SECRET || "changeme";
     const token = jwt.sign(
       { sub: user!.id, email: user!.email, role: user!.sector.toUpperCase() },
       secret,
       {
-        expiresIn: '1h',
+        expiresIn: "1h",
       }
-    )
+    );
 
     return res.status(200).json({
-      message: 'Usuário logado com sucesso',
+      message: "Usuário logado com sucesso",
       token,
       user: {
         id: user!.id,
@@ -40,12 +40,12 @@ async function Autenticate(req: Request, res: Response) {
         role: user!.sector,
         name: user!.name ?? null,
       },
-    })
+    });
   } catch (error) {
     if (error instanceof Error) {
-      console.error('Autenticação error:', error)
-      return res.status(500).json({ message: error.message })
+      console.error("Autenticação error:", error);
+      return res.status(500).json({ message: error.message });
     }
   }
 }
-router.post('/auth', Autenticate)
+router.post("/auth", Autenticate);

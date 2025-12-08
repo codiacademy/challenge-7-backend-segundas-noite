@@ -1,9 +1,9 @@
-import express from 'express'
-export const router = express.Router()
-import { prisma } from '../../lib/prisma.js'
-import { hash } from 'bcryptjs'
-import { authenticateSector } from '../middlewares/authenticateSector.ts'
-import { userSchemaBody } from '../../models/users-models.ts'
+import express from "express";
+export const router = express.Router();
+import { prisma } from "../../lib/prisma.js";
+import { hash } from "bcryptjs";
+import { authenticateSector } from "../middlewares/authenticateSector.ts";
+import { userSchemaBody } from "../../models/users-models.ts";
 
 /**
  * @swagger
@@ -43,14 +43,13 @@ import { userSchemaBody } from '../../models/users-models.ts'
  */
 
 router.post(
-  '/users',
-  authenticateSector('ADIMIN'),
-  authenticateSector('MANAGER'),
+  "/users",
+  authenticateSector("ADIMIN") || authenticateSector("MANAGER"),
   async (req, res) => {
     try {
       const { name, phoneNumber, email, wage, sector, status, password } =
-        userSchemaBody.parse(req.body)
-      const passwordHash = await hash(password, 6)
+        userSchemaBody.parse(req.body);
+      const passwordHash = await hash(password, 6);
       await prisma.collaborator.create({
         data: {
           name,
@@ -61,12 +60,12 @@ router.post(
           status,
           password: passwordHash,
         },
-      })
-      return res.status(201).json({ message: 'User created successfully' })
+      });
+      return res.status(201).json({ message: "User created successfully" });
     } catch (error) {
       if (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }
-)
+);

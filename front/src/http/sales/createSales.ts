@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios";
 
-interface createSalesProps {
+interface CreateSalesProps {
   id: string;
   Modalidade: "Online" | "Presencial";
   courseId: string;
@@ -11,9 +11,7 @@ interface createSalesProps {
   desconto: number;
   comisao: number;
   imposto: number;
-  taxacartao: number;
-  dataVenda: Date;
-  valorLiquido?: number;
+  taxaCartao: number;
 }
 
 export async function Createsales({
@@ -27,13 +25,11 @@ export async function Createsales({
   desconto,
   comisao,
   imposto,
-  taxacartao,
-  dataVenda,
-  valorLiquido,
-}: createSalesProps) {
+  taxaCartao,
+}: CreateSalesProps) {
   const response = await api.post("/sales", {
     id,
-    modalidade: Modalidade.toUpperCase(),
+    modalidade: Modalidade.toUpperCase(), // backend espera minúsculo
     courseId,
     nomeAluno,
     email,
@@ -42,9 +38,7 @@ export async function Createsales({
     desconto,
     comisao,
     imposto,
-    taxacartao,
-    dataVenda: new Date(dataVenda),
-    valorLiquido,
+    taxaCartao,
   });
   return response.data;
 }

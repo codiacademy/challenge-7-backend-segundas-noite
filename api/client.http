@@ -8,7 +8,7 @@ Content-Type: application/json
  "phoneNumber": "32945454461",
  "email": "bruno@gmail.com",
  "wage": 5500, 
- "sector": "Tecnologia" ,
+ "sector": "adimin" ,
  "status": "ATIVO",
  "password": "123456"
  

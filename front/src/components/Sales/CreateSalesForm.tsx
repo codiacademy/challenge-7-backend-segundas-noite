@@ -48,9 +48,6 @@ const formSchema = z.object({
   commission: z.coerce.number({ message: "A comissão é obrigatória" }),
   tax: z.coerce.number({ message: "O imposto é obrigatório" }),
   cardTax: z.coerce.number({ message: "A taxa do cartão é obrigatória" }),
-  netvalue: z.coerce
-    .number({ message: "O valor líquido é obrigatório" })
-    .optional(),
 });
 
 type formSchema = z.infer<typeof formSchema>;
@@ -94,6 +91,7 @@ export function SalesForm({
   async function confirmSale(data: formSchema) {
     try {
       setIsSubmitting(true);
+
       const payload = {
         id:
           typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -108,13 +106,14 @@ export function SalesForm({
         desconto: data.discount,
         comisao: data.commission,
         imposto: data.tax,
-        taxacartao: data.cardTax,
-        valorLiquido: data.netvalue,
-        dataVenda: new Date(),
+        taxaCartao: data.cardTax,
+        // ⚡ Não enviamos valorLiquido nem dataVenda, o backend calcula
       };
+
       await Createsales(payload);
       toast.success("Venda cadastrada com sucesso!");
-      onSuccess(), reset();
+      reset();
+      onSuccess();
     } catch (error) {
       console.log(error);
       toast.error("Erro ao cadastrar venda");
@@ -286,7 +285,7 @@ export function SalesForm({
               </div>
 
               <div>
-                <label>Imposto</label>
+                <label>Imposto (%)</label>
                 <Input
                   placeholder="Imposto"
                   type="number"
@@ -301,11 +300,11 @@ export function SalesForm({
               </div>
 
               <div>
-                <label>Taxa do cartão</label>
+                <label>Taxa do cartão (%)</label>
                 <Input
                   placeholder="Taxa do cartão"
                   type="number"
-                  {...register("cardTax")}
+                  {...register("cardTax", { valueAsNumber: true })}
                   required
                 />
                 {errors?.cardTax && (
@@ -314,15 +313,6 @@ export function SalesForm({
                   </span>
                 )}
               </div>
-              {/*
-              <div>
-                <label>Valor líquido</label>
-                <Input
-                  placeholder="Valor líquido"
-                  type="number"
-                  {...register("netvalue")}
-                />
-              </div> */}
             </div>
 
             <Button

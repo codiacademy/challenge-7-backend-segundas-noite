@@ -1,2 +1,0 @@
-Ira sair
-git ignore

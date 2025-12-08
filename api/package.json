@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "seed": "tsx apps/src/lib/seed.ts"
+  },
   "type": "module",
   "devDependencies": {
     "@types/express": "^5.0.5",

@@ -1,17 +1,16 @@
-import express from 'express'
-export const router = express.Router()
-import { prisma } from '../../lib/prisma.js'
-import { userSchemaBody } from '../../models/users-models.ts'
-import { authenticateSector } from '../middlewares/authenticateSector.ts'
+import express from "express";
+export const router = express.Router();
+import { prisma } from "../../lib/prisma.js";
+import { userSchemaBody } from "../../models/users-models.ts";
+import { authenticateSector } from "../middlewares/authenticateSector.ts";
 router.put(
-  '/users/:id',
-  authenticateSector('ADIMIN'),
-  authenticateSector('MANAGER'),
+  "/users/:id",
+  authenticateSector("ADIMIN") || authenticateSector("MANAGER"),
   async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.params;
       const { name, phoneNumber, email, wage, sector, status } =
-        userSchemaBody.parse(req.body)
+        userSchemaBody.parse(req.body);
 
       const updatedUser = await prisma.collaborator.update({
         where: { id },
@@ -23,22 +22,22 @@ router.put(
           sector,
           status,
         },
-      })
+      });
 
       return res.status(200).json({
-        message: 'Usuário atualizado com sucesso',
+        message: "Usuário atualizado com sucesso",
         user: updatedUser,
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
 
       if (error instanceof Error) {
-        return res.status(404).json({ message: 'Usuário não encontrado' })
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      return res.status(500).json({ message: 'Erro interno' })
+      return res.status(500).json({ message: "Erro interno" });
     }
   }
-)
+);
 
-export default router
+export default router;
