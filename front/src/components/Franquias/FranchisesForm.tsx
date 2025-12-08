@@ -1,4 +1,3 @@
-//Formulário de vendas
 import {
   DialogContent,
   DialogTrigger,
@@ -6,6 +5,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../ui/dialog";
+
 import {
   Select,
   SelectContent,
@@ -26,16 +26,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import type { IconBaseProps } from "react-icons";
 
+import { createFranchise } from "@/services/unitsService";
+
 interface FranchisesProps {
   name: string;
-  city?: string;
-  state?: string;
-  responsible?: string;
-  phone?: string;
-  email?: string;
   trigger?: string;
-  status?: string;
   icon?: React.ComponentType<IconBaseProps>;
+  onSuccess?: () => void; // 👉 chamado após criar a franquia
 }
 
 const formSchema = z.object({
@@ -53,31 +50,28 @@ const formSchema = z.object({
 
   phone: z
     .string({ message: "O campo telefone é obrigatório" })
-    .min(11, { message: "O número deve conter no mínimo 11 dígitos" }),
+    .min(11, { message: "O telefone deve conter no mínimo 11 dígitos" }),
 
   city: z
-    .string({ message: "O campo city é obrigatório" })
-    .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
+    .string({ message: "O campo cidade é obrigatório" })
+    .min(3, { message: "A cidade deve conter no mínimo 3 caracteres" }),
+
   state: z
-    .string({ message: "O campo state é obrigatório" })
-    .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
+    .string({ message: "O campo estado é obrigatório" })
+    .min(2, { message: "O estado deve conter no mínimo 2 caracteres" }),
+
   responsible: z
-    .string({ message: "O campo responsavel é obrigatório" })
-    .min(5, { message: "O nome deve conter no mínimo 5 caracteres" }),
+    .string({ message: "O campo responsável é obrigatório" })
+    .min(3, { message: "O responsável deve conter no mínimo 3 caracteres" }),
 });
 
 type formSchema = z.infer<typeof formSchema>;
 
 export function FranchisesForm({
   name,
-  city,
-  state,
-  responsible,
-  phone,
-  email,
-  status,
   trigger,
   icon: Icon,
+  onSuccess,
 }: FranchisesProps) {
   const {
     handleSubmit,
@@ -91,18 +85,28 @@ export function FranchisesForm({
 
   async function confirmFranquia(data: formSchema) {
     try {
-      console.log(data);
+      await createFranchise({
+        name: data.name,
+        city: data.city,
+        state: data.state,
+        responsible: data.responsible,
+        phoneNumber: data.phone,
+        email: data.email,
+        status: data.status,
+      });
 
       toast.success("Franquia cadastrada com sucesso!");
 
       reset();
+
+      if (onSuccess) onSuccess();
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        toast.error("Erro ao cadastrar venda");
-      }
+      toast.error("Erro ao cadastrar franquia");
+      console.error(error);
     }
   }
+
+  // dentro do componente FranchisesForm
 
   return (
     <div>
@@ -115,10 +119,7 @@ export function FranchisesForm({
                 : "flex h-9 w-9 items-center justify-center rounded-sm border bg-white transition duration-[0.5s] hover:bg-gray-300"
             } flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg`}
           >
-            <div className="flex items-center justify-center">
-              {Icon && <Icon />}
-            </div>
-
+            {Icon && <Icon />}
             {trigger}
           </Button>
         </DialogTrigger>
@@ -126,100 +127,61 @@ export function FranchisesForm({
         <DialogContent className="p-3">
           <DialogTitle>{name}</DialogTitle>
           <DialogDescription>{name}</DialogDescription>
+
           <form onSubmit={handleSubmit(confirmFranquia)}>
             <div>
-              <label className="text-left">Nome da Franquia</label>
-              <Input
-                placeholder="Nome da Franquia"
-                type="text"
-                {...register("name")}
-                required
-              />
-              {errors?.name && (
-                <span className="mb-4 text-left text-sm text-red-500">
-                  {errors.name.message}
-                </span>
+              <label>Nome da Franquia</label>
+              <Input placeholder="Nome" {...register("name")} />
+              {errors.name && (
+                <span className="text-red-500">{errors.name.message}</span>
               )}
             </div>
 
             <div>
-              <label htmlFor="">Cidade</label>
-              <Input
-                placeholder="Cidade"
-                type="text"
-                {...register("city")}
-                required
-              />
-              {errors?.city && (
-                <span className="text-left text-sm text-red-500">
-                  {errors.city.message}
-                </span>
+              <label>Cidade</label>
+              <Input placeholder="Cidade" {...register("city")} />
+              {errors.city && (
+                <span className="text-red-500">{errors.city.message}</span>
               )}
             </div>
 
             <div>
-              <label htmlFor="">Estado</label>
-              <Input
-                placeholder="Estado"
-                type="text"
-                {...register("state")}
-                required
-              />
-              {errors?.state && (
-                <span className="text-left text-sm text-red-500">
-                  {errors.state.message}
-                </span>
+              <label>Estado</label>
+              <Input placeholder="Estado" {...register("state")} />
+              {errors.state && (
+                <span className="text-red-500">{errors.state.message}</span>
               )}
             </div>
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div>
-                <label htmlFor="">Responsalve</label>
-                <Input
-                  placeholder="Responsavel pela franquia"
-                  type="text"
-                  {...register("responsible")}
-                  required
-                />
-                {errors?.responsible && (
-                  <span className="text-left text-sm text-red-500">
+                <label>Responsável</label>
+                <Input placeholder="Responsável" {...register("responsible")} />
+                {errors.responsible && (
+                  <span className="text-red-500">
                     {errors.responsible.message}
                   </span>
                 )}
               </div>
 
               <div>
-                <label htmlFor="">Telefone da Franquia</label>
-                <Input
-                  placeholder="Telefone da Franquia"
-                  type="tel"
-                  {...register("phone")}
-                  required
-                />
+                <label>Telefone</label>
+                <Input placeholder="Telefone" {...register("phone")} />
                 {errors.phone && (
-                  <span className="text-left text-sm text-red-500">
-                    {errors.phone.message}
-                  </span>
+                  <span className="text-red-500">{errors.phone.message}</span>
                 )}
               </div>
 
               <div>
-                <label htmlFor="">Email</label>
-                <Input
-                  placeholder="Email da Franquia"
-                  type="email"
-                  {...register("email")}
-                  required
-                />
+                <label>Email</label>
+                <Input placeholder="Email" {...register("email")} />
                 {errors.email && (
-                  <span className="text-left text-sm text-red-500">
-                    {errors.email.message}
-                  </span>
+                  <span className="text-red-500">{errors.email.message}</span>
                 )}
               </div>
 
               <div>
-                <label htmlFor="">Status</label>
+                <label>Status</label>
                 <Controller
                   control={control}
                   name="status"
@@ -238,8 +200,15 @@ export function FranchisesForm({
                     </Select>
                   )}
                 />
+                {errors.status && (
+                  <span className="text-red-500">{errors.status.message}</span>
+                )}
               </div>
-              <Button className="mt-4 w-fit cursor-pointer justify-between bg-purple-500 p-4 hover:bg-purple-600">
+
+              <Button
+                type="submit"
+                className="mt-4 w-fit cursor-pointer bg-purple-500 p-4 hover:bg-purple-600"
+              >
                 Salvar
               </Button>
             </div>

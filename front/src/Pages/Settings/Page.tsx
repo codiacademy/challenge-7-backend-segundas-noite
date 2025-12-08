@@ -1,3 +1,7 @@
+import { getFranchises } from "../../services/unitsService";
+
+import { useEffect } from "react";
+
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -6,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { EditFranchiseModal } from "@/components/Franquias/EditFrnachiseModal";
 
 import { Aside } from "@/components/Aside";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,16 +22,20 @@ import {
   Mail,
   MapPin,
   Phone,
-  Plus,
   Save,
   Shield,
   ShieldAlert,
+  Trash2,
   User,
 } from "lucide-react";
 import Logo from "../../assests/CodiLogoAside.png";
 import { CardSessoes } from "@/components/Settings/ActiveSessionCard";
 import { useState } from "react";
 import { FranchisesForm } from "@/components/Franquias/FranchisesForm";
+import { Button } from "@/components/ui/button";
+import { deleteFranchise } from "@/services/unitsService";
+import { toast } from "sonner";
+import { set } from "date-fns";
 
 const sessoesAtivas = [
   {
@@ -52,50 +61,47 @@ const sessoesAtivas = [
   },
 ];
 
-const unidadesAtivas = [
-  {
-    unidade: "Matriz - São Paulo",
-    cidade: "Av. Paulista, 1000 - São Paulo, SP",
-    id: 1,
-    status: "Desconectado",
-    funcionarios: 10,
-    vendas: 455420,
-    sinc: 3,
-  },
-  {
-    unidade: "Filial 1 - Rio de Janeiro",
-    cidade: "Rua das Flores, 200 - Rio de Janeiro, RJ",
-    id: 2,
-    status: "Conectado e sincronizado",
-    funcionarios: 11,
-    vendas: 33000,
-    sinc: 3,
-  },
-  {
-    unidade: "Filial 2 - Belo Horizonte",
-    cidade: "Av. Afonso Pena, 300 - Belo Horizonte, MG",
-    id: 3,
-    status: "Conectado e sincronizado",
-    funcionarios: 5,
-    vendas: 11000,
-    sinc: 3,
-  },
-  {
-    unidade: "Filial 3 - Brasília",
-    cidade: "SCS Quadra 1, Bloco A - Brasília, DF",
-    id: 4,
-    status: "Desconectado",
-    funcionarios: 7,
-    vendas: 12000,
-    sinc: 3,
-  },
-];
-
 export function Settings() {
-  const [selectedUnidade, setSelectedUnidade] = useState<string>("1");
-  const unidadeSelecionada = unidadesAtivas.find(
+  const [unidades, setUnidades] = useState<any[]>([]);
+  const [selectedUnidade, setSelectedUnidade] = useState<string>("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  async function handleDeleteFranchise(id: string) {
+    try {
+      await deleteFranchise(id);
+      toast.success("Franquia deletada com sucesso!");
+      await loadUnidades();
+    } catch (error) {
+      toast.error("Erro ao deletar franquia");
+      console.error(error);
+    }
+  }
+  const unidadeSelecionada = unidades.find(
     (unidade) => String(unidade.id) === selectedUnidade,
-  );
+  ) ?? {
+    status: "Ativa",
+    sinc: 0,
+    vendas: 0,
+    funcionarios: 0,
+    unidade: "",
+    cidade: "",
+  };
+  useEffect(() => {
+    loadUnidades();
+  }, []);
+
+  const loadUnidades = async () => {
+    try {
+      const data = await getFranchises();
+      setUnidades(data);
+
+      if (data.length > 0) {
+        setSelectedUnidade(String(data[0].id));
+      }
+    } catch (err) {
+      console.error("Erro ao carregar unidades", err);
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-100">
       <Aside />
@@ -382,6 +388,7 @@ export function Settings() {
                   <FranchisesForm
                     name="Cadastre sua nova unidade"
                     trigger="Nova Franquia"
+                    onSuccess={loadUnidades}
                   />
                 </h1>
               </div>
@@ -401,10 +408,10 @@ export function Settings() {
                       <SelectValue placeholder="Unidades" />
                     </SelectTrigger>
                     <SelectContent>
-                      {unidadesAtivas.map((unidade) => (
+                      {unidades.map((unidade) => (
                         <SelectItem value={`${unidade.id}`}>
                           <div className="flex flex-col">
-                            <h1 className="font-bold">{unidade.unidade} </h1>
+                            <h1 className="font-bold">{unidade.name} </h1>
                             <p className="text-gray-500">{unidade.cidade} </p>
                           </div>
                         </SelectItem>
@@ -421,11 +428,9 @@ export function Settings() {
                   <div className="flex items-center gap-5 rounded-lg bg-[#F5F0FC] p-3">
                     <Building2 size={32} className="text-[#A243D2]" />
                     <div className="flex flex-col gap-2">
-                      <h1 className="font-bold">
-                        {unidadeSelecionada.unidade}
-                      </h1>
+                      <h1 className="font-bold">{unidadeSelecionada.name}</h1>
                       <p className="font-semibold text-[#A243D2]">
-                        {unidadeSelecionada.cidade}
+                        {unidadeSelecionada.city}
                       </p>
                       <span
                         className={`flex items-center ${
@@ -437,6 +442,24 @@ export function Settings() {
                       >
                         <Dot /> {unidadeSelecionada.status}
                       </span>
+
+                      <div className="flex gap-2 text-zinc-500">
+                        <Button
+                          onClick={() => handleDeleteFranchise(selectedUnidade)}
+                          variant={"ghost"}
+                          className="items-left flex w-fit justify-start"
+                        >
+                          <Trash2 size={24} color="red" />
+                        </Button>
+
+                        <Button
+                          onClick={() => setIsEditModalOpen(true)}
+                          variant={"outline"}
+                          className="items-left flex w-fit justify-start"
+                        >
+                          Atualizar
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -451,15 +474,16 @@ export function Settings() {
                     <div className="flex w-1/2 flex-col items-center justify-center rounded-lg border p-5">
                       <span className="text-gray-500">Status</span>
                       <span
-                        className={`${
-                          unidadeSelecionada?.status == "Desconectado"
-                            ? "text-red-500"
-                            : "text-green-500"
-                        } `}
+                        className={`flex items-center ${
+                          unidadeSelecionada.status === "ATIVO"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
                       >
-                        {unidadeSelecionada?.status == "Desconectado"
-                          ? "Desconectada"
-                          : "Ativa"}{" "}
+                        <Dot />{" "}
+                        {unidadeSelecionada.status === "ATIVO"
+                          ? "Conectado e sincronizado"
+                          : "Desconectado"}
                       </span>
                     </div>
                     {/* Ultima sincronização */}
@@ -477,10 +501,10 @@ export function Settings() {
                     <div className="flex w-1/2 flex-col items-center justify-center rounded-lg border p-5">
                       <span className="text-gray-500">Vendas do Mês</span>
                       <span className="text-[13px] font-bold lg:text-2xl">
-                        {unidadeSelecionada?.vendas.toLocaleString("pt-BR", {
+                        {unidadeSelecionada?.vendas?.toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        })}
+                        }) ?? "0"}
                       </span>
                     </div>
                     {/* Funcionarios */}
@@ -494,6 +518,12 @@ export function Settings() {
                 </div>
               </div>
             </div>
+            <EditFranchiseModal
+              isOpen={isEditModalOpen}
+              onClose={() => setIsEditModalOpen(false)}
+              franchise={unidadeSelecionada}
+              onSuccess={loadUnidades}
+            />
           </TabsContent>
         </Tabs>
       </div>

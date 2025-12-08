@@ -37,8 +37,13 @@ import { router as getSalesYear } from './functions/metrics/metrics-sales/filter
 
 import { router as autenticate } from './functions/autenticate.ts'
 
+import swaggerUi from 'swagger-ui-express'
+import swaggerJsdoc from 'swagger-jsdoc'
+import { assert } from 'console'
+
 const app = express()
 
+app.use(express.json())
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -47,7 +52,36 @@ app.use(
   })
 )
 
-app.use(express.json())
+/**
+ * @swagger
+ * /teste:
+ *   get:
+ *     summary: Rota de teste
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ */
+app.get('/teste', (req, res) => res.send('OK'))
+
+app.get('/hello', (req, res) => {
+  res.send('Hello World!')
+})
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Minha API',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./index.ts', './functions/**/*.ts'],
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+console.log(specs)
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs))
+
 //Router Collaborator
 // app.use(router)
 app.use(createUser)

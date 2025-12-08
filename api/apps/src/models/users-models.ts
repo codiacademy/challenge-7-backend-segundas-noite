@@ -15,4 +15,7 @@ export const userSchemaBody = z.object({
     .string({ message: 'O setor deve conter no mínimo 3 caracteres' })
     .min(3),
   status: z.enum(['ATIVO', 'INATIVO', 'FERIAS']),
+  password: z
+    .string({ message: 'A senha deve conter no mínimo 6 caracteres' })
+    .min(6),
 })
